@@ -1,0 +1,158 @@
+PATH
+  remote: .
+  specs:
+    research-assistant (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (8.0.1)
+      base64
+      benchmark (>= 0.3)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.3.1)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      logger (>= 1.4.2)
+      minitest (>= 5.1)
+      securerandom (>= 0.3)
+      tzinfo (~> 2.0, >= 2.0.5)
+      uri (>= 0.13.1)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
+    async (2.22.0)
+      console (~> 1.29)
+      fiber-annotation
+      io-event (~> 1.7)
+      metrics (~> 0.12)
+      traces (~> 0.15)
+    base64 (0.2.0)
+    benchmark (0.4.0)
+    bigdecimal (3.1.9)
+    coderay (1.1.3)
+    concurrent-ruby (1.3.5)
+    connection_pool (2.5.0)
+    console (1.29.2)
+      fiber-annotation
+      fiber-local (~> 1.1)
+      json
+    crack (1.0.0)
+      bigdecimal
+      rexml
+    diff-lcs (1.5.1)
+    drb (2.2.1)
+    dry-configurable (1.3.0)
+      dry-core (~> 1.1)
+      zeitwerk (~> 2.6)
+    dry-core (1.1.0)
+      concurrent-ruby (~> 1.0)
+      logger
+      zeitwerk (~> 2.6)
+    dry-inflector (1.2.0)
+    dry-initializer (3.2.0)
+    dry-logic (1.6.0)
+      bigdecimal
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.1)
+      zeitwerk (~> 2.6)
+    dry-schema (1.14.0)
+      concurrent-ruby (~> 1.0)
+      dry-configurable (~> 1.0, >= 1.0.1)
+      dry-core (~> 1.1)
+      dry-initializer (~> 3.2)
+      dry-logic (~> 1.5)
+      dry-types (~> 1.8)
+      zeitwerk (~> 2.6)
+    dry-types (1.8.2)
+      bigdecimal (~> 3.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.0)
+      dry-inflector (~> 1.0)
+      dry-logic (~> 1.4)
+      zeitwerk (~> 2.6)
+    dry-validation (1.11.1)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.1)
+      dry-initializer (~> 3.2)
+      dry-schema (~> 1.14)
+      zeitwerk (~> 2.6)
+    factory_bot (6.5.1)
+      activesupport (>= 6.1.0)
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
+    faraday (2.12.2)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
+    fiber-annotation (0.2.0)
+    fiber-local (1.1.0)
+      fiber-storage
+    fiber-storage (1.0.0)
+    fileutils (1.7.3)
+    hashdiff (1.1.2)
+    i18n (1.14.7)
+      concurrent-ruby (~> 1.0)
+    io-event (1.9.0)
+    json (2.10.1)
+    logger (1.6.5)
+    method_source (1.1.0)
+    metrics (0.12.1)
+    minitest (5.25.4)
+    net-http (0.6.0)
+      uri
+    pry (0.15.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    public_suffix (6.0.1)
+    rake (13.2.1)
+    rexml (3.4.0)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.3)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.3)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.2)
+    securerandom (0.4.1)
+    smart_properties (1.17.0)
+    traces (0.15.2)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    uri (1.0.2)
+    webmock (3.25.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
+    zeitwerk (2.7.1)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  async
+  dry-validation
+  factory_bot (~> 6.2)
+  faker (~> 3.2)
+  faraday (~> 2.0)
+  fileutils
+  json
+  pry
+  rake
+  research-assistant!
+  rspec (~> 3.12)
+  smart_properties
+  webmock (~> 3.18)
+  zeitwerk
+
+BUNDLED WITH
+   2.5.10
