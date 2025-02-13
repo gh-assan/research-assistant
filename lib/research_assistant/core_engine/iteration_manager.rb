@@ -3,7 +3,7 @@ module ResearchAssistant
     class IterationManager
       include SmartProperties
 
-      # property :api_client, accepts: OllamaInterface::APIClient
+      # property :api_client, accepts: OllamaInterface::ApiClient
       property :api_client
       property :file_manager, accepts: KnowledgeBase::FileManager
       property :current_iteration, default: 0

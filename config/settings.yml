@@ -1,7 +1,7 @@
 # config/settings.yml
 ollama:
   base_url: "http://localhost:11434"
-  model: "deepseek-coder:33b-instruct-q5_K_M"
+  model: "deepseek-r1:8b"
   parameters:
     temperature: 0.7
     top_p: 0.9

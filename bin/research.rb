@@ -6,7 +6,7 @@ def main
   research_id = SecureRandom.uuid
 
   # Initialize components
-  api_client = ResearchAssistant::OllamaInterface::APIClient.new
+  api_client = ResearchAssistant::OllamaInterface::ApiClient.new
   file_manager = ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
   concept_extractor = ResearchAssistant::CoreEngine::ConceptExtractor.new
   question_engine = ResearchAssistant::CoreEngine::QuestionEngine.new(api_client: api_client)

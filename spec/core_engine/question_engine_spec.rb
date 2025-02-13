@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::QuestionEngine do
-  let(:api_client) { instance_double('OllamaInterface::APIClient') }
+  let(:api_client) { instance_double('OllamaInterface::ApiClient') }
   let(:engine) { described_class.new(api_client: api_client) }
 
   describe '#generate_questions' do

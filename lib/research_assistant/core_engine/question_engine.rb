@@ -3,7 +3,7 @@ module ResearchAssistant
     class QuestionEngine
       include SmartProperties
 
-      # property :api_client, accepts: OllamaInterface::APIClient
+      # property :api_client, accepts: OllamaInterface::ApiClient
       property :api_client
       property :validator, accepts: Validators::Validator, default: -> { Validators::Validator.new }
 
