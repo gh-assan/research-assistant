@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::IterationManager do
-  let(:mock_api) { instance_double('OllamaInterface::APIClient') }
+  let(:mock_api) { instance_double('OllamaInterface::ApiClient') }
   let(:mock_file) { instance_double('KnowledgeBase::FileManager') }
   let(:mock_questions) { instance_double('QuestionEngine') }
   let(:mock_termination) { instance_double('TerminationEvaluator') }

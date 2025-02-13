@@ -3,7 +3,7 @@ module ResearchAssistant
     class DeepSeekQuestionGenerator
       include SmartProperties
 
-      property :api_client, accepts: OllamaInterface::APIClient
+      property :api_client, accepts: OllamaInterface::ApiClient
       property :validator, accepts: Validators::Validator
 
       def generate(topic, analysis)

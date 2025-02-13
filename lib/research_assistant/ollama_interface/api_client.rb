@@ -1,7 +1,7 @@
 module ResearchAssistant
   module OllamaInterface
-    class APIClient
-      def initialize(model: 'deepseek-coder')
+    class ApiClient
+      def initialize(model: ResearchAssistant.config.ollama_model)
         @model = model
         @conn = Faraday.new(url: ResearchAssistant.config.ollama_url) do |f|
           f.request :json
