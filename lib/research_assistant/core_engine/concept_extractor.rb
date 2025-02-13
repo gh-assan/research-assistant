@@ -1,7 +1,7 @@
 module ResearchAssistant
   module CoreEngine
     class ConceptExtractor
-      def initialize(api_client: ResearchAssistant::OllamaInterface::ApiClient.new)
+      def initialize(api_client)
         @api_client = api_client
       end
 
