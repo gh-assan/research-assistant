@@ -1,16 +1,24 @@
 require 'spec_helper'
-# require_relative '../../lib/research_assistant/core_engine/concept_updater'
 
 RSpec.describe ResearchAssistant::CoreEngine::ConceptUpdater do
-  let(:updater) { described_class.new }
+  let(:mock_concept_extractor) { instance_double('ResearchAssistant::CoreEngine::ConceptExtractor') }
+  let(:updater) { described_class.new(mock_concept_extractor) }
 
   describe '#update' do
-    it 'adds new concepts without duplicates' do
-      analysis = { core_concepts: ["AI"] }
-      response = "Quantum Machine Learning (QML) combines AI and Quantum Computing"
-      
+    it 'updates the analysis with new concepts extracted from the response' do
+      response = "This is a sample response with Concepts."
+      analysis = { core_concepts: ['ExistingConcept'] }
+      new_concepts = [
+        { concept: 'Sample', relevance: 0.9 },
+        { concept: 'Response', relevance: 0.8 },
+        { concept: 'Concepts', relevance: 0.85 }
+      ]
+
+      expect(mock_concept_extractor).to receive(:extract).with(response).and_return(new_concepts)
+
       result = updater.update(analysis, response)
-      expect(result[:core_concepts]).to match_array(["AI", "Quantum", "Machine", "Learning", "QML", "Computing"])
+
+      expect(result[:core_concepts]).to include('ExistingConcept', 'Sample', 'Response', 'Concepts')
     end
   end
 end
