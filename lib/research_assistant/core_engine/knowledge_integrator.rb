@@ -13,7 +13,9 @@ module ResearchAssistant
         responses.each do |response|
           analysis = response_analyzer.analyze(response, analysis)
           analysis = concept_updater.update(analysis, response)
-          analysis = gap_detector.detect(analysis, response)
+          gaps = gap_detector.detect(analysis, response)
+          analysis[:knowledge_gaps] ||= []
+          analysis[:knowledge_gaps] += gaps
         end
         analysis
       end

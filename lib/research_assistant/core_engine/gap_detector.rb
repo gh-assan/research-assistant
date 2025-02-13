@@ -1,20 +1,22 @@
 module ResearchAssistant
   module CoreEngine
     class GapDetector
+      def initialize(api_client: ResearchAssistant::OllamaInterface::ApiClient.new)
+        @api_client = api_client
+      end
+
       def detect(analysis, response)
-        # Identify gaps in the response
-        gaps = identify_gaps(response)
-        analysis[:knowledge_gaps] ||= []
-        analysis[:knowledge_gaps] += gaps
-        analysis[:knowledge_gaps].uniq!
-        analysis
+        prompt = "Identify knowledge gaps in the following analysis based on the response: #{response}\n\nAnalysis: #{analysis}"
+        api_response = @api_client.query(prompt)
+        parse_response(api_response)
       end
 
       private
 
-      def identify_gaps(response)
-        # Placeholder for gap detection logic
-        [{ area: "Unresolved Question", priority: 1 }]
+      def parse_response(response)
+        # Assuming the response contains a list of knowledge gaps
+        gaps = JSON.parse(response)
+        gaps.map { |gap| { gap: gap['text'], severity: gap['severity'] } }
       end
     end
   end
