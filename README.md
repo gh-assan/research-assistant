@@ -34,6 +34,11 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
 4. Configure settings:
     Update the [settings.yml](http://_vscodecontentref_/0) file with your configuration settings.
 
+5. set up json model 
+```shell
+  ollama create research-assistant-json-model -f Modelfile
+```
+
 ## Usage
 
 ### Command-Line Interface
