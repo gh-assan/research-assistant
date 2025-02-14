@@ -6,6 +6,7 @@ require 'faraday'
 require 'dry-validation'
 require 'smart_properties'
 require 'async'
+require 'singleton'
 
 loader = Zeitwerk::Loader.for_gem
 loader.setup
