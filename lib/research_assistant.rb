@@ -15,7 +15,7 @@ module ResearchAssistant
   class Configuration
     include Singleton
 
-    attr_accessor :ollama_url, :max_iterations, :log_level, :research_dir, :ollama_model
+    attr_accessor :ollama_url, :max_iterations, :log_level, :research_dir, :ollama_model, :json_model
 
     def initialize
       @ollama_url = ENV.fetch('OLLAMA_URL', 'http://localhost:11434')
@@ -23,6 +23,7 @@ module ResearchAssistant
       @log_level = ENV.fetch('LOG_LEVEL', 'info')
       @research_dir = ENV.fetch('RESEARCH_DIR', 'research')
       @ollama_model = ENV.fetch('OLLAMA_MODEL', 'deepseek-r1:8b')
+      @json_model = ENV.fetch('OLLAMA_MODEL', 'research-assistant-json-model')
     end
   end
 

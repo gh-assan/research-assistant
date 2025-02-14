@@ -29,11 +29,14 @@ def main
     knowledge_integrator: knowledge_integrator
   )
 
+  pp "Run research on topic: #{topic}"
   # Run research
   analysis = concept_extractor.extract(topic)
-  file_manager.save_analysis(analysis)
+  # file_manager.save_analysis(analysis)
 
-  iteration_manager.run(analysis)
+  # iteration_manager.run(analysis)
+  
+  pp analysis
 end
 
 main if __FILE__ == $0
