@@ -1,20 +1,19 @@
 module ResearchAssistant
   module CoreEngine
     class ConceptUpdater
+      attr_reader :concept_extractor
+
+      def initialize(concept_extractor)
+        @concept_extractor = concept_extractor
+      end
+
       def update(analysis, response)
         # Update concepts based on the response
-        new_concepts = extract_concepts(response)
+        new_concepts = concept_extractor.extract(response).map { |concept| concept[:concept] }
         analysis[:core_concepts] ||= []
         analysis[:core_concepts] += new_concepts
         analysis[:core_concepts].uniq!
         analysis
-      end
-
-      private
-
-      def extract_concepts(response)
-        # Placeholder for concept extraction logic
-        response.scan(/[A-Z][a-z]+/).uniq
       end
     end
   end

@@ -1,6 +1,9 @@
 module ResearchAssistant
   module OllamaInterface
     class ApiClient
+
+      attr_reader :model, :conn
+
       def initialize(model: ResearchAssistant.config.ollama_model)
         @model = model
         @conn = Faraday.new(url: ResearchAssistant.config.ollama_url) do |f|
@@ -10,9 +13,9 @@ module ResearchAssistant
       end
 
       def query(prompt)
-        response = @conn.post('/api/generate') do |req|
+        response = conn.post('/api/generate') do |req|
           req.body = {
-            model: @model,
+            model: model,
             prompt: prompt,
             stream: false
           }

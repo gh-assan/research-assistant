@@ -1,13 +1,16 @@
 module ResearchAssistant
   module CoreEngine
     class ConceptExtractor
-      def initialize(api_client: ResearchAssistant::OllamaInterface::ApiClient.new)
+
+      attr_reader :api_client
+
+      def initialize(api_client)
         @api_client = api_client
       end
 
       def extract(text)
         prompt = "Extract key concepts return json with the following format [array of concepts contains text and relevance] from the following text: #{text}"
-        response = @api_client.query(prompt)
+        response = api_client.query(prompt)
         parse_response(response)
       end
 
