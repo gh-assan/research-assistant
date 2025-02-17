@@ -1,8 +1,12 @@
+require_relative 'models/response_schema_prompt'
+
 module ResearchAssistant
   module CoreEngine
     class GapDetector
-      def initialize(api_client)
+      attr_reader :api_client, :json_api_client
+      def initialize(api_client, json_api_client)
         @api_client = api_client
+        @json_api_client = json_api_client
       end
 
       def detect(analysis, response)
@@ -15,8 +19,7 @@ module ResearchAssistant
 
       def parse_response(response)
         # Assuming the response contains a list of knowledge gaps
-        gaps = JSON.parse(response)
-        gaps.map { |gap| { gap: gap['text'], severity: gap['severity'] } }
+        json_api_client.query(response, Models::GAPS_SCHEMA)
       end
     end
   end
