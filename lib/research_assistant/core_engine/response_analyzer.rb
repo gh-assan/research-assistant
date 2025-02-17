@@ -1,32 +1,34 @@
+require_relative 'models/response_schema_prompt'
+
 module ResearchAssistant
   module CoreEngine
     class ResponseAnalyzer
-      attr_reader :api_client
+      
+      attr_reader :api_client, :json_api_client
 
-      def initialize(api_client)
+      def initialize(api_client, json_api_client)
         @api_client = api_client
+        @json_api_client = json_api_client
       end
 
-      def analyze(response, analysis)
-        # Extract key insights from the response
-        insights = extract_insights(response)
-        analysis[:insights] ||= []
-        analysis[:insights] += insights
+      def analyze(text, analysis)
+        insights = extract_insights(text)
+        analysis[:insights] = insights
         analysis
       end
 
       private
 
-      def extract_insights(response)
-        # Construct a meaningful prompt for the language model
-        prompt = "Analyze the following response and extract key insights:\n\n#{response}\n\nInsights:"
-        
-        # Call the language model API to extract insights
-        api_response = api_client.query(prompt)
-        
-        # Parse the JSON response and extract insights
-        parsed_response = JSON.parse(api_response)
-        parsed_response['insights']
+      def extract_insights(text)
+        prompt = "Analyze the following text and extract key insights : #{text}"
+        response = api_client.query(prompt)
+        parse_response(response)
+      end
+
+      private
+
+      def parse_response(response)
+        json_api_client.query(response, Models::INSIGHTS_SCHEMA)
       end
     end
   end
