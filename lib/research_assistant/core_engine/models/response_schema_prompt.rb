@@ -57,6 +57,21 @@ module ResearchAssistant
            "scientific_article_prompt": "A concise and precise prompt for creating a scientific article based on the user's intent."
         }
       PROMPT
+
+      QUESTIONS_SCHEMA = <<~PROMPT
+        Please analyze the given text to returns the questions in a structured response using the following JSON format.:
+        {
+          "questions": [
+            {
+              "type": "foundational | critical | counterfactual | synthesis", 
+              "question": "A question based on the text.",
+              "priority": "high | medium | low", 
+              "relevance": "The relevance of the question to the analysis.",
+              "explanation": "A brief explanation of why this question of the type."
+            }
+          ]
+        }
+      PROMPT
     end
   end
 end
