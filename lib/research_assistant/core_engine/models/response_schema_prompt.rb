@@ -24,6 +24,19 @@ module ResearchAssistant
           ]
         }
       PROMPT
+
+      GAPS_SCHEMA = <<~PROMPT
+      Please analyze the given text to identify knowledge gaps in the analysis and provide a structured output in the following JSON format:
+        {
+            "knowledge_gaps": [
+              {
+                "insight": "A concise summary of the missing or incomplete concept in the analysis.",
+                "classification": "The category of the gap within the analysis. Possible values: foundational, critical, counterfactual, synthesis.",
+                "significance": "A brief explanation of why addressing this gap is important for improving the analysis."
+              }
+            ]
+        }
+      PROMPT
     end
   end
 end

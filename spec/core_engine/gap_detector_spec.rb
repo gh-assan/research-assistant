@@ -1,23 +1,47 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::GapDetector do
   let(:api_client) { instance_double(ResearchAssistant::OllamaInterface::ApiClient) }
-  let(:detector) { described_class.new(api_client: api_client) }
+  let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
+  let(:detector) { described_class.new(api_client, json_api_client) }
+  let(:analysis) { { insights: [], core_concepts: [], knowledge_gaps: [] } }
+  let(:response) { 'This is a sample response.' }
+  let(:api_response) {
+    [
+      { 'insight' => 'Missing foundational concept.', 'classification' => 'foundational', 'significance' => 'It is crucial for the analysis.' },
+      { 'insight' => 'Lack of critical analysis.', 'classification' => 'critical', 'significance' => 'It is important for thorough understanding.' }
+    ]
+  }
 
   describe '#detect' do
-    it 'detects knowledge gaps from the analysis and response using the API client' do
-      analysis = { insights: [], core_concepts: [], knowledge_gaps: [] }
-      response = "This is a sample response."
-      api_response = [
-        { 'text' => 'Gap 1', 'severity' => 'high' },
-        { 'text' => 'Gap 2', 'severity' => 'medium' }
-      ].to_json
+    context 'when the API request is successful' do
+      it 'returns the detected knowledge gaps' do
+        allow(api_client).to receive(:query).and_return(api_response.to_json)
+        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::GAPS_SCHEMA).and_return(api_response)
 
-      expect(api_client).to receive(:query).with("Identify knowledge gaps in the following analysis based on the response: #{response}\n\nAnalysis: #{analysis}").and_return(api_response)
+        gaps = detector.detect(analysis, response)
+        expect(gaps).to be_an(Array)
+        expect(gaps).not_to be_empty
+        expect(gaps).to all(include('insight', 'classification', 'significance'))
+      end
+    end
 
-      result = detector.detect(analysis, response)
+    context 'when the API request fails' do
+      it 'raises an API error' do
+        allow(api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
 
-      expect(result).to include({ gap: 'Gap 1', severity: 'high' }, { gap: 'Gap 2', severity: 'medium' })
+        expect { detector.detect(analysis, response) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
+      end
+    end
+
+    context 'when there is a connection error' do
+      it 'raises a connection error' do
+        allow(api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
+
+        expect { detector.detect(analysis, response) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+      end
     end
   end
 end
