@@ -21,7 +21,7 @@ def main
     concept_updater: concept_updater,
     gap_detector: gap_detector
   )
-  question_engine = ResearchAssistant::CoreEngine::QuestionEngine.new(api_client: api_client)
+  question_engine = ResearchAssistant::CoreEngine::QuestionEngine.new(api_client, json_api_client)
   iteration_manager = ResearchAssistant::CoreEngine::IterationManager.new(
     api_client: api_client,
     file_manager: file_manager,
