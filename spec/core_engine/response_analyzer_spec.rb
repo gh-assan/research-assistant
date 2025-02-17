@@ -1,20 +1,48 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::ResponseAnalyzer do
-  let(:mock_api_client) { instance_double('ResearchAssistant::OllamaInterface::ApiClient') }
-  let(:analyzer) { described_class.new(mock_api_client) }
+  let(:api_client) { instance_double(ResearchAssistant::OllamaInterface::ApiClient) }
+  let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
+  let(:analyzer) { described_class.new(api_client, json_api_client) }
+  let(:text) { 'The sky is blue and the sun is bright.' }
+  let(:analysis) { { insights: [] } }
+  let(:response_body) {
+    [
+      { 'insight' => 'The sky is blue.', 'classification' => 'foundational', 'significance' => 'It describes the color of the sky.' },
+      { 'insight' => 'The sun is bright.', 'classification' => 'critical', 'significance' => 'It describes the brightness of the sun.' }
+    ]
+  }
 
   describe '#analyze' do
-    it 'extracts insights from the response using the API client' do
-      response = "This is a sample response."
-      analysis = { insights: [] }
-      api_response = { 'insights' => ['Insight 1', 'Insight 2'] }.to_json
+    context 'when the API request is successful' do
+      it 'returns the analysis with extracted insights' do
+        allow(api_client).to receive(:query).and_return(response_body.to_json)
+        allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::Models::INSIGHTS_SCHEMA).and_return(response_body)
 
-      expect(mock_api_client).to receive(:query).with("Analyze the following response and extract key insights:\n\n#{response}\n\nInsights:").and_return(api_response)
+        result = analyzer.analyze(text, analysis)
+        expect(result).to be_a(Hash)
+        expect(result[:insights]).to be_an(Array)
+        expect(result[:insights]).not_to be_empty
+        expect(result[:insights]).to all(include('insight', 'classification', 'significance'))
+      end
+    end
 
-      result = analyzer.analyze(response, analysis)
+    context 'when the API request fails' do
+      it 'raises an API error' do
+        allow(api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
 
-      expect(result[:insights]).to include('Insight 1', 'Insight 2')
+        expect { analyzer.analyze(text, analysis) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
+      end
+    end
+
+    context 'when there is a connection error' do
+      it 'raises a connection error' do
+        allow(api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
+
+        expect { analyzer.analyze(text, analysis) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+      end
     end
   end
 end

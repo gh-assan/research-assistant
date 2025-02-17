@@ -13,7 +13,7 @@ def main
   json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
   file_manager = ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
   concept_extractor = ResearchAssistant::CoreEngine::ConceptExtractor.new(api_client, json_api_client)
-  response_analyzer = ResearchAssistant::CoreEngine::ResponseAnalyzer.new(api_client)
+  response_analyzer = ResearchAssistant::CoreEngine::ResponseAnalyzer.new(api_client, json_api_client)
   concept_updater = ResearchAssistant::CoreEngine::ConceptUpdater.new(concept_extractor)
   gap_detector = ResearchAssistant::CoreEngine::GapDetector.new(api_client)
   knowledge_integrator = ResearchAssistant::CoreEngine::KnowledgeIntegrator.new(
@@ -32,11 +32,16 @@ def main
   pp "Run research on topic: #{topic}"
   # Run research
   analysis = concept_extractor.extract(topic)
+
+  pp "Concepts :" + analysis.inspect
+
+  analysis = response_analyzer.analyze(topic, analysis)
+
   # file_manager.save_analysis(analysis)
 
   # iteration_manager.run(analysis)
   
-  pp analysis
+  pp analysis.inspect
 end
 
 main if __FILE__ == $0

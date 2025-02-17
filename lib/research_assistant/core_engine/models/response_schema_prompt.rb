@@ -12,6 +12,18 @@ module ResearchAssistant
           ]
         }
       PROMPT
+
+      INSIGHTS_SCHEMA = <<~PROMPT
+        {
+          "insights": [
+            {
+              "insight": "A concise summary of the extracted concept from the text.",
+              "classification": "The category of the concept within the analysis. Possible values: foundational, critical, counterfactual, synthesis.",
+              "significance": "A brief explanation of why this insight is important or how it contributes to the overall analysis."
+            }
+          ]
+        }
+      PROMPT
     end
   end
 end
