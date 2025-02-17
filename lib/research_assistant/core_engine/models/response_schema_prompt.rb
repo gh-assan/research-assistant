@@ -37,6 +37,19 @@ module ResearchAssistant
             ]
         }
       PROMPT
+
+      RELATIONS_SCHEMA = <<~PROMPT
+      Please analyze the given text to identify relationships between concepts and provide a structured output in the following JSON format:
+        {
+          "relationships": [
+            {
+              "insight": "A concise summary of the identified relationship between concepts in the text.",
+              "classification": "The category of the relationship within the analysis. Possible values: causal, comparative, associative, hierarchical.",
+              "significance": "A brief explanation of why this relationship is important or how it contributes to understanding the text."
+            }
+          ]
+        }
+      PROMPT
     end
   end
 end

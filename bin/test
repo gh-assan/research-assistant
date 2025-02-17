@@ -13,6 +13,7 @@ def main
   json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
   file_manager = ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
   concept_extractor = ResearchAssistant::CoreEngine::ConceptExtractor.new(api_client, json_api_client)
+  relations_finder = ResearchAssistant::CoreEngine::RelationsFinder.new(api_client, json_api_client)
   response_analyzer = ResearchAssistant::CoreEngine::ResponseAnalyzer.new(api_client, json_api_client)
   concept_updater = ResearchAssistant::CoreEngine::ConceptUpdater.new(concept_extractor)
   gap_detector = ResearchAssistant::CoreEngine::GapDetector.new(api_client, json_api_client)
@@ -46,6 +47,10 @@ def main
   gaps = gap_detector.detect(topic, analysis)
 
   pp gaps.inspect
+
+  relations = relations_finder.find_relations(topic, analysis)
+
+  pp relations.inspect
 end
 
 main if __FILE__ == $0
