@@ -11,16 +11,17 @@ module ResearchAssistant
         @json_api_client = json_api_client
       end
 
-      def analyze(text, analysis)
-        insights = extract_insights(text)
-        analysis[:insights] = insights
-        analysis
+      def analyze(topic, text)
+        extract_insights(topic, text)
       end
 
       private
 
-      def extract_insights(text)
-        prompt = "Analyze the following text and extract key insights : #{text}"
+      def extract_insights(topic, text)
+        prompt = "Analyze the following text and extract key insights
+                  Topic: #{topic}
+                  Text: #{text}
+                "
         response = api_client.query(prompt)
         parse_response(response)
       end

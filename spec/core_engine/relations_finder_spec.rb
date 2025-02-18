@@ -7,6 +7,7 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
   let(:finder) { described_class.new(api_client, json_api_client) }
   let(:text) { 'The sky is blue and the sun is bright.' }
+  let(:topic) { 'sample topic.' }
   let(:analysis) { { insights: [], core_concepts: [], knowledge_gaps: [] } }
   let(:api_response) {
     [
@@ -21,7 +22,7 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
         allow(api_client).to receive(:query).and_return(api_response.to_json)
         allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::RELATIONS_SCHEMA).and_return(api_response)
 
-        relations = finder.find_relations(text, analysis)
+        relations = finder.find_relations(topic, text, analysis)
         expect(relations).to be_an(Array)
         expect(relations).not_to be_empty
         expect(relations).to all(include('insight', 'classification', 'significance'))
@@ -32,7 +33,7 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
       it 'raises an API error' do
         allow(api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
 
-        expect { finder.find_relations(text, analysis) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
+        expect { finder.find_relations(topic, text, analysis) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
       end
     end
 
@@ -40,7 +41,7 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
       it 'raises a connection error' do
         allow(api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
 
-        expect { finder.find_relations(text, analysis) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+        expect { finder.find_relations(topic, text, analysis) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
       end
     end
   end
