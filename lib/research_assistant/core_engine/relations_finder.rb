@@ -11,8 +11,11 @@ module ResearchAssistant
         @json_api_client = json_api_client
       end
 
-      def find_relations(text, analysis)
-        prompt = "Please analyze the given text to identify relationships between concepts: #{text}, Analysis: #{analysis}"
+      def find_relations(topic, text, analysis)
+        prompt = "Please analyze the given text to identify relationships between concepts:
+                   Topic : #{topic},
+                   Text : #{text},
+                   Analysis: #{analysis}"
         response = api_client.query(prompt)
         parse_response(response)
       end

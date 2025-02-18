@@ -39,6 +39,12 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
   ollama create research-assistant-json-model -f Modelfile
 ```
 
+5. set up writer model
+```shell
+  ollama create research-assistant-writer-model -f WriterModelfile
+```
+
+
 ## Usage
 
 ### Command-Line Interface

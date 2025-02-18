@@ -18,7 +18,6 @@ module ResearchAssistant
       private
 
       def parse_response(response)
-        # Assuming the response contains a list of knowledge gaps
         json_api_client.query(response, Models::GAPS_SCHEMA)
       end
     end

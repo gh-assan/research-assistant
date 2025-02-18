@@ -11,8 +11,11 @@ module ResearchAssistant
         @json_api_client = json_api_client
       end
 
-      def extract(text)
-        prompt = "Extract key concepts from the following text: #{text}"
+      def extract(topic, text)
+        prompt = "Extract key concepts from the following
+                  Topic: #{topic}
+                  text: #{text}
+                  "
         response = api_client.query(prompt)
         parse_response(response)
       end
@@ -20,9 +23,7 @@ module ResearchAssistant
       private
 
       def parse_response(response)
-        # Assuming the response contains a list of concepts
-        concepts = json_api_client.query(response, Models::CONCEPTS_SCHEMA)
-        concepts
+        json_api_client.query(response, Models::CONCEPTS_SCHEMA)
       end
     end
   end

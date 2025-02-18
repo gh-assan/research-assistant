@@ -7,7 +7,7 @@ RSpec.describe ResearchAssistant::CoreEngine::ResponseAnalyzer do
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
   let(:analyzer) { described_class.new(api_client, json_api_client) }
   let(:text) { 'The sky is blue and the sun is bright.' }
-  let(:analysis) { { insights: [] } }
+  let(:topic) { 'sample topic.' }
   let(:response_body) {
     [
       { 'insight' => 'The sky is blue.', 'classification' => 'foundational', 'significance' => 'It describes the color of the sky.' },
@@ -21,11 +21,10 @@ RSpec.describe ResearchAssistant::CoreEngine::ResponseAnalyzer do
         allow(api_client).to receive(:query).and_return(response_body.to_json)
         allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::Models::INSIGHTS_SCHEMA).and_return(response_body)
 
-        result = analyzer.analyze(text, analysis)
-        expect(result).to be_a(Hash)
-        expect(result[:insights]).to be_an(Array)
-        expect(result[:insights]).not_to be_empty
-        expect(result[:insights]).to all(include('insight', 'classification', 'significance'))
+        result = analyzer.analyze(topic, text)
+        expect(result).to be_an(Array)
+        expect(result).not_to be_empty
+        expect(result).to all(include('insight', 'classification', 'significance'))
       end
     end
 
@@ -33,7 +32,7 @@ RSpec.describe ResearchAssistant::CoreEngine::ResponseAnalyzer do
       it 'raises an API error' do
         allow(api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
 
-        expect { analyzer.analyze(text, analysis) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
+        expect { analyzer.analyze(topic, text) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
       end
     end
 
@@ -41,7 +40,7 @@ RSpec.describe ResearchAssistant::CoreEngine::ResponseAnalyzer do
       it 'raises a connection error' do
         allow(api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
 
-        expect { analyzer.analyze(text, analysis) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+        expect { analyzer.analyze(topic, text) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
       end
     end
   end

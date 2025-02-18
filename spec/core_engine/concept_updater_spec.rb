@@ -7,6 +7,7 @@ RSpec.describe ResearchAssistant::CoreEngine::ConceptUpdater do
   describe '#update' do
     it 'updates the analysis with new concepts extracted from the response' do
       response = "This is a sample response with Concepts."
+      topic = "This is a sample topic."
       analysis = { core_concepts: ['ExistingConcept'] }
       new_concepts = [
         { concept: 'Sample', relevance: 0.9 },
@@ -14,9 +15,9 @@ RSpec.describe ResearchAssistant::CoreEngine::ConceptUpdater do
         { concept: 'Concepts', relevance: 0.85 }
       ]
 
-      expect(mock_concept_extractor).to receive(:extract).with(response).and_return(new_concepts)
+      expect(mock_concept_extractor).to receive(:extract).with(topic, response).and_return(new_concepts)
 
-      result = updater.update(analysis, response)
+      result = updater.update(analysis, topic, response)
 
       expect(result[:core_concepts]).to include('ExistingConcept', 'Sample', 'Response', 'Concepts')
     end
