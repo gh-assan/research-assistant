@@ -2,7 +2,7 @@ require_relative 'models/response_schema_prompt'
 
 module ResearchAssistant
   module CoreEngine
-    class ResponseAnalyzer
+    class InsightsExtractor
       
       attr_reader :api_client, :json_api_client
 

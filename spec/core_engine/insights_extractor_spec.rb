@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResearchAssistant::CoreEngine::ResponseAnalyzer do
+RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
   let(:api_client) { instance_double(ResearchAssistant::OllamaInterface::ApiClient) }
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
   let(:analyzer) { described_class.new(api_client, json_api_client) }

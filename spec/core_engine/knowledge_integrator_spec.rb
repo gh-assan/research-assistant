@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
-  let(:mock_analyzer) { instance_double('ResponseAnalyzer') }
+  let(:mock_analyzer) { instance_double('InsightsExtractor') }
   let(:mock_updater) { instance_double('ConceptUpdater') }
   let(:mock_detector) { instance_double('GapDetector') }
   let(:integrator) { described_class.new(response_analyzer: mock_analyzer, concept_updater: mock_updater, gap_detector: mock_detector) }

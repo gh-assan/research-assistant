@@ -18,7 +18,7 @@ def main
   concept_extractor = ResearchAssistant::CoreEngine::ConceptExtractor.new(api_client, json_api_client)
   relations_finder = ResearchAssistant::CoreEngine::RelationsFinder.new(api_client, json_api_client)
   user_intent_extractor = ResearchAssistant::CoreEngine::UserIntentExtractor.new(json_api_client)
-  response_analyzer = ResearchAssistant::CoreEngine::ResponseAnalyzer.new(api_client, json_api_client)
+  response_analyzer = ResearchAssistant::CoreEngine::InsightsExtractor.new(api_client, json_api_client)
   concept_updater = ResearchAssistant::CoreEngine::ConceptUpdater.new(concept_extractor)
   gap_detector = ResearchAssistant::CoreEngine::GapDetector.new(api_client, json_api_client)
   output_generator = ResearchAssistant::Output::OutputGenerator.new(writer_api_client)
