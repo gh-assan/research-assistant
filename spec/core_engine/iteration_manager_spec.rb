@@ -9,7 +9,7 @@ RSpec.describe ResearchAssistant::CoreEngine::IterationManager do
   let(:mock_focus_prioritizer) { instance_double('ResearchAssistant::CoreEngine::FocusPrioritizer') }
   let(:mock_termination_evaluator) { instance_double('ResearchAssistant::CoreEngine::TerminationEvaluator') }
   let(:mock_feedback_system) { instance_double('ResearchAssistant::CoreEngine::FeedbackSystem') }
-  let(:mock_response_analyzer) { instance_double('ResearchAssistant::CoreEngine::ResponseAnalyzer') }
+  let(:mock_response_analyzer) { instance_double('ResearchAssistant::CoreEngine::InsightsExtractor') }
   let(:mock_concept_extractor) { instance_double('ResearchAssistant::CoreEngine::ConceptExtractor') }
   let(:mock_concept_updater) { instance_double('ResearchAssistant::CoreEngine::ConceptUpdater') }
   let(:mock_gap_detector) { instance_double('ResearchAssistant::CoreEngine::GapDetector') }

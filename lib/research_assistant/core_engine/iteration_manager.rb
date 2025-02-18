@@ -21,8 +21,8 @@ module ResearchAssistant
         @termination_evaluator ||= TerminationEvaluator.new
         @feedback_system ||= FeedbackSystem.new
         @knowledge_integrator ||= KnowledgeIntegrator.new(
-          response_analyzer: ResponseAnalyzer.new(api_client),
-          concept_updater: ConceptUpdater.new(ConceptExtractor.new(api_client)),
+          insights_extractor: InsightsExtractor.new(api_client),
+          concept_extractor: ConceptUpdater.new(ConceptExtractor.new(api_client)),
           gap_detector: GapDetector.new(api_client)
         )
       end

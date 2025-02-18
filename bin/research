@@ -13,12 +13,12 @@ def main
   json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
   file_manager = ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
   concept_extractor = ResearchAssistant::CoreEngine::ConceptExtractor.new(api_client, json_api_client)
-  response_analyzer = ResearchAssistant::CoreEngine::ResponseAnalyzer.new(api_client, json_api_client)
+  response_analyzer = ResearchAssistant::CoreEngine::InsightsExtractor.new(api_client, json_api_client)
   concept_updater = ResearchAssistant::CoreEngine::ConceptUpdater.new(concept_extractor)
   gap_detector = ResearchAssistant::CoreEngine::GapDetector.new(api_client, json_api_client)
   knowledge_integrator = ResearchAssistant::CoreEngine::KnowledgeIntegrator.new(
-    response_analyzer: response_analyzer,
-    concept_updater: concept_updater,
+    insights_extractor: response_analyzer,
+    concept_extractor: concept_updater,
     gap_detector: gap_detector
   )
   question_engine = ResearchAssistant::CoreEngine::QuestionEngine.new(api_client, json_api_client)
