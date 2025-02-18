@@ -1,23 +1,25 @@
 module ResearchAssistant
   module CoreEngine
     class KnowledgeIntegrator
-      attr_reader :response_analyzer, :concept_updater, :gap_detector
+      attr_reader :insights_extractor, :concept_extractor, :gap_detector
 
-      def initialize(response_analyzer:, concept_updater:, gap_detector:)
-        @response_analyzer = response_analyzer
-        @concept_updater = concept_updater
+      def initialize(insights_extractor:, concept_extractor:, gap_detector:)
+        @insights_extractor = insights_extractor
+        @concept_extractor = concept_extractor
         @gap_detector = gap_detector
       end
 
-      def integrate(analysis, responses)
-        responses.each do |response|
-          analysis = response_analyzer.analyze(response, analysis)
-          analysis = concept_updater.update(analysis, response)
-          gaps = gap_detector.detect(analysis, response)
-          analysis[:knowledge_gaps] ||= []
-          analysis[:knowledge_gaps] += gaps
-        end
-        analysis
+      def integrate(analysis, topic, response)
+        insights = insights_extractor.analyze(topic, response)
+        concepts = concept_extractor.extract(topic, response)
+        gaps = gap_detector.detect(analysis, response)
+
+        knowledge = ResearchAssistant::KnowledgeBase::Knowledge.new
+        knowledge.insights = insights
+        knowledge.concepts = concepts
+        knowledge.knowledge_gaps = gaps
+
+        knowledge
       end
     end
   end
