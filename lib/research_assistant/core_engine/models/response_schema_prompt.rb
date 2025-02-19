@@ -59,7 +59,7 @@ module ResearchAssistant
       PROMPT
 
       QUESTIONS_SCHEMA = <<~PROMPT
-        Please analyze the given text to returns the questions in a structured response using the following JSON format.:
+        Please analyze the given text to returns the questions in a structured response using the following format.:
         {
           "questions": [
             {
@@ -70,6 +70,15 @@ module ResearchAssistant
               "explanation": "A brief explanation of why this question of the type."
             }
           ]
+        }
+      PROMPT
+
+      RANK_SCHEMA = <<~PROMPT
+        Please analyze the text and assign a rank coming from the text . 
+        Provide the response in the following format:
+        {
+          "rank": value, 
+          "reasons": "A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement."
         }
       PROMPT
     end
