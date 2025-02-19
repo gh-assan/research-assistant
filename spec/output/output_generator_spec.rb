@@ -13,9 +13,9 @@ RSpec.describe ResearchAssistant::Output::OutputGenerator do
                     knowledge_gaps: ['Gap 1', 'Gap 2'],
                     concepts: ['Concept 1', 'Concept 2'],
                     relations: ['Relation 1', 'Relation 2'],
-                    questions: ['Question 1', 'Question 2'])
+                    questions: ['Question 1', 'Question 2'],
+                    last_round_article: 'This is the last round response.')
   }
-  let(:last_round_responses) { 'This is the last round response.' }
   let(:prompt) {
     "Write a detailed article about climate change.
                   On topic: Climate Change
@@ -34,7 +34,7 @@ RSpec.describe ResearchAssistant::Output::OutputGenerator do
       it 'returns the generated article' do
         allow(write_api_client).to receive(:write_article).with(prompt).and_return(api_response)
 
-        article = generator.generate_article(knowledge, last_round_responses)
+        article = generator.generate_article(knowledge)
         expect(article).to eq(api_response)
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe ResearchAssistant::Output::OutputGenerator do
       it 'raises an API error' do
         allow(write_api_client).to receive(:write_article).with(prompt).and_raise(RuntimeError, 'API Error: Something went wrong')
 
-        expect { generator.generate_article(knowledge, last_round_responses) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
+        expect { generator.generate_article(knowledge) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe ResearchAssistant::Output::OutputGenerator do
       it 'raises a connection error' do
         allow(write_api_client).to receive(:write_article).with(prompt).and_raise(RuntimeError, 'Connection Error: Connection failed')
 
-        expect { generator.generate_article(knowledge, last_round_responses) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+        expect { generator.generate_article(knowledge) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
       end
     end
   end

@@ -3,49 +3,54 @@ module ResearchAssistant
     class IterationManager
       include SmartProperties
 
-      property :api_client
       property :file_manager
-      property :question_engine
       property :progress_tracker
       property :depth_adjuster
       property :focus_prioritizer
       property :termination_evaluator
       property :feedback_system
       property :knowledge_integrator
+      property :output_generator
 
-      def initialize(**args)
-        super
+      def initialize(api_client, json_api_client, writer_api_client)
         @progress_tracker ||= ProgressTracker.new
         @depth_adjuster ||= DepthAdjuster.new
         @focus_prioritizer ||= FocusPrioritizer.new
-        @termination_evaluator ||= TerminationEvaluator.new
+        @termination_evaluator ||= TerminationEvaluator.new(api_client, json_api_client)
+        @output_generator ||= ResearchAssistant::Output::OutputGenerator.new(writer_api_client)
         @feedback_system ||= FeedbackSystem.new
         @knowledge_integrator ||= KnowledgeIntegrator.new(
-          insights_extractor: InsightsExtractor.new(api_client),
-          concept_extractor: ConceptUpdater.new(ConceptExtractor.new(api_client)),
-          gap_detector: GapDetector.new(api_client)
+          insights_extractor: InsightsExtractor.new(api_client, json_api_client),
+          concept_extractor: ConceptExtractor.new(api_client, json_api_client),
+          gap_detector: GapDetector.new(api_client, json_api_client),
+          questions_engine: QuestionEngine.new(api_client, json_api_client),
+          relations_finder: RelationsFinder.new(api_client, json_api_client)
         )
       end
 
-      def run(analysis)
-        until termination_evaluator.should_terminate?(analysis)
-          iteration_number = progress_tracker.next_iteration
-          depth_level = depth_adjuster.adjust_depth(analysis, iteration_number)
-          focus_areas = focus_prioritizer.prioritize(analysis)
-
-          # Generate and execute questions
-          questions = question_engine.generate_questions(analysis)
-          responses = questions.map { |q| api_client.query(q) }
+      def run(knowledge)
+        round_knowledge = knowledge
+        iteration_number = 1
+        until termination_evaluator.should_terminate?(round_knowledge)
 
           # Integrate knowledge
-          analysis = knowledge_integrator.integrate(analysis, responses)
+          round_knowledge = knowledge_integrator.integrate(round_knowledge.topic, round_knowledge.article, round_knowledge.user_intent, iteration_number)
+
+          iteration_number = knowledge.iteration + 1
+
+          article = output_generator.generate_article(round_knowledge)
+
+          round_knowledge.article = article
+
+          pp "iteration : #{round_knowledge.iteration}"
 
           # Save iteration data
-          file_manager.save_iteration(iteration_number, { questions: questions, responses: responses })
+          # file_manager.save_iteration(iteration_number, { questions: questions, responses: responses })
 
           # Update feedback system
-          feedback_system.update(analysis, iteration_number)
+          # feedback_system.update(analysis, iteration_number)
         end
+        round_knowledge
       end
     end
   end

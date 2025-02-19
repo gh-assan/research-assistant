@@ -32,10 +32,9 @@ def main
   )
 
   iteration_manager = ResearchAssistant::CoreEngine::IterationManager.new(
-    api_client: api_client,
-    file_manager: file_manager,
-    question_engine: question_engine,
-    knowledge_integrator: knowledge_integrator
+    api_client,
+    json_api_client,
+    writer_api_client
   )
 
   pp "Run research on topic: #{topic}"
@@ -44,8 +43,8 @@ def main
   pp prompt
 
   # questions = question_engine.extract(prompt)
-  # # pp questions
-  #
+  # pp questions
+
   # # Run research
   # concepts = concept_extractor.extract(topic, article)
   #
@@ -69,12 +68,20 @@ def main
 
   # pp relations.inspect
 
-  analysis = []
-  knowledge = knowledge_integrator.integrate(analysis, topic, article, prompt)
+  # analysis = []
+  # knowledge = knowledge_integrator.integrate(analysis, topic, article, prompt)
+  #
+  # article = output_generator.generate_article(knowledge, article)
+  #
+  # pp article
 
-  article = output_generator.generate_article(knowledge, article)
+   knowledge = ResearchAssistant::KnowledgeBase::Knowledge.new
+    knowledge.iteration = 1
+    knowledge.topic = topic
+    knowledge.user_intent = prompt
+  round_knowledge = iteration_manager.run(knowledge)
 
-  pp article
+  pp "article : #{round_knowledge.article}"
 end
 
 main if __FILE__ == $0

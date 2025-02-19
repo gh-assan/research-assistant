@@ -1,3 +1,6 @@
+require 'json'
+require 'faraday'
+
 module ResearchAssistant
   module OllamaInterface
     class JsonApiClient
@@ -15,8 +18,8 @@ module ResearchAssistant
       def query(prompt, schema)
         response = conn.post('/api/generate') do |req|
           req.body = {
-            model: model ,
-            prompt: prompt + " " + schema,
+            model: model,
+            prompt: "#{prompt} #{schema}",
             stream: false
           }
         end
@@ -27,7 +30,7 @@ module ResearchAssistant
         begin
           JSON.parse(response.body['response'])
         rescue JSON::ParserError => e
-          raise "JSON Parsing Error: #{e.message}"
+          raise "JSON Parsing Error: #{e.message}. Response body: #{response.body['response']}"
         end
       rescue Faraday::Error => e
         raise "Connection Error: #{e.message}"

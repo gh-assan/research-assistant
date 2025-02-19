@@ -1,26 +1,60 @@
+require_relative 'models/response_schema_prompt'
+
 module ResearchAssistant
   module CoreEngine
     class TerminationEvaluator
-      def should_terminate?(analysis)
-        # Check for termination conditions
-        saturation_detected?(analysis) || objectives_met?(analysis) || redundancy_detected?(analysis)
+
+      attr_reader :api_client, :json_api_client
+
+      def initialize(api_client, json_api_client)
+        @api_client = api_client
+        @json_api_client = json_api_client
+      end
+
+      def should_terminate?(knowledge)
+        objectives_met?(knowledge) || min_score_met?(knowledge) || max_iterations_reached?(knowledge)
       end
 
       private
 
-      def saturation_detected?(analysis)
-        # Check if no new insights are being generated
-        analysis[:insights].size >= 10 && analysis[:insights].last(3).uniq.size == 1
+      def max_iterations_reached?(knowledge)
+        knowledge.iteration >= 2
       end
 
-      def objectives_met?(analysis)
-        # Check if research objectives are met
-        analysis[:knowledge_gaps].empty?
+      def min_score_met?(knowledge)
+        score(knowledge.user_intent, knowledge.article) >= 90
       end
 
-      def redundancy_detected?(analysis)
-        # Check for redundant iterations
-        analysis[:iterations].size >= 10 && analysis[:iterations].last(3).uniq.size == 1
+      def score(topic, text)
+        prompt = " Please evaluate the given text and assign a score from 0 to 100 based on how well it meets the user's objectives. Consider factors such as relevance, completeness, accuracy, and clarity.
+                   {
+                    rank: value,
+                    reasons: A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement.
+                   }
+                  Here is the User Request: #{topic}
+                  text: #{text}
+                  "
+        response = api_client.query(prompt)
+        s= parse_response(response)
+        pp s
+
+        if  s.nil?
+          return 1
+        end
+        s
+      end
+
+      def parse_response(response)
+        json_api_client.query(response, Models::RANK_SCHEMA)['rank']
+      end
+
+      def objectives_met?(knowledge)
+
+        if knowledge.knowledge_gaps.nil?
+          return false
+        end
+
+        knowledge.knowledge_gaps.empty?
       end
     end
   end
