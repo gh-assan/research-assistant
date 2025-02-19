@@ -7,14 +7,21 @@ module ResearchAssistant
         FileUtils.mkdir_p(@base_path)
       end
 
-      def save_analysis(analysis)
-        File.write(File.join(@base_path, 'analysis.json'), JSON.pretty_generate(analysis))
-      end
-
-      def save_iteration(iteration_number, data)
-        iteration_dir = File.join(@base_path, "iterations/#{iteration_number}")
+      def save_iteration(knowledge)
+        iteration_dir = File.join(@base_path, "iterations/#{knowledge.iteration}")
         FileUtils.mkdir_p(iteration_dir)
-        File.write(File.join(iteration_dir, 'data.json'), JSON.pretty_generate(data))
+
+        # Save article to .md file
+        article = knowledge.article
+        
+        File.write(File.join(iteration_dir, "article.md"), article)
+
+        # Save remaining data to .json file
+        File.write(File.join(iteration_dir, 'questions.json'), JSON.pretty_generate(knowledge.questions))
+        File.write(File.join(iteration_dir, 'concepts.json'), JSON.pretty_generate(knowledge.concepts))
+        File.write(File.join(iteration_dir, 'insights.json'), JSON.pretty_generate(knowledge.insights))
+        File.write(File.join(iteration_dir, 'knowledge_gaps.json'), JSON.pretty_generate(knowledge.knowledge_gaps))
+        File.write(File.join(iteration_dir, 'relations.json'), JSON.pretty_generate(knowledge.relations))
       end
     end
   end

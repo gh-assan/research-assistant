@@ -18,7 +18,11 @@ module ResearchAssistant
       private
 
       def parse_response(response)
-        json_api_client.query(response, Models::GAPS_SCHEMA)
+        gabs = json_api_client.query(response, Models::GAPS_SCHEMA)
+        gabs..is_a?(Hash) ? gabs['knowledge_gaps'] : gabs
+      rescue StandardError => e
+        pp " Error in parsing knowledge gaps #{e}"
+        return []
       end
     end
   end

@@ -12,18 +12,26 @@ module ResearchAssistant
       end
 
       def integrate(topic, last_round_article, user_intent, iteration_number)
-        insights = insights_extractor.analyze(topic, last_round_article)
-        concepts = concept_extractor.extract(topic, last_round_article)
-        gaps = gap_detector.detect(insights, last_round_article)
-        questions = questions_engine.extract(last_round_article)
-        relations = relations_finder.find_relations(topic, last_round_article, insights)
+        input_article = last_round_article || user_intent
+        insights = insights_extractor.analyze(topic, input_article)
+        concepts = concept_extractor.extract(topic, input_article)
+        gaps = gap_detector.detect(insights, input_article)
+        questions = questions_engine.extract(input_article)
+        relations = relations_finder.find_relations(topic, input_article, insights)
+
+        # # Debugging print statements
+        # pp "insights: #{insights}"
+        # pp "concepts: #{concepts}"
+        # pp "gaps: #{gaps}"
+        # pp "questions: #{questions}"
+        # pp "relations: #{relations}"
 
         knowledge = ResearchAssistant::KnowledgeBase::Knowledge.new
-        knowledge.insights = insights['insights'] unless insights['insights'].nil?
-        knowledge.concepts = concepts['concepts'] unless concepts['concepts'].nil?
-        knowledge.knowledge_gaps = gaps['knowledge_gaps'] unless gaps['knowledge_gaps'].nil?
-        knowledge.questions = questions['questions'] unless questions['questions'].nil?
-        knowledge.relations = relations['relations'] unless relations['relations'].nil?
+        knowledge.insights = insights
+        knowledge.concepts = concepts
+        knowledge.knowledge_gaps = gaps
+        knowledge.questions = questions
+        knowledge.relations = relations
         knowledge.user_intent = user_intent
         knowledge.iteration = iteration_number
         knowledge.last_round_article = last_round_article
