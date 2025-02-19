@@ -8,10 +8,12 @@ RSpec.describe ResearchAssistant::CoreEngine::QuestionEngine do
   let(:engine) { described_class.new(api_client, json_api_client) }
   let(:text) { 'The sky is blue and the sun is bright.' }
   let(:api_response) {
-    [
-      { 'type' => 'foundational', 'question' => 'What is the color of the sky?', 'priority' => 'high', 'relevance' => 'foundational', 'explanation' => 'It addresses the basic principle of the text.' },
-      { 'type' => 'critical', 'question' => 'Why is the sun bright?', 'priority' => 'medium', 'relevance' => 'critical', 'explanation' => 'It examines the strength of the idea presented.' }
-    ]
+    {
+      'questions' => [
+        { 'type' => 'foundational', 'question' => 'What is the color of the sky?', 'priority' => 'high', 'relevance' => 'foundational', 'explanation' => 'It addresses the basic principle of the text.' },
+        { 'type' => 'critical', 'question' => 'Why is the sun bright?', 'priority' => 'medium', 'relevance' => 'critical', 'explanation' => 'It examines the strength of the idea presented.' }
+      ]
+    }
   }
 
   describe '#extract' do
@@ -21,7 +23,7 @@ RSpec.describe ResearchAssistant::CoreEngine::QuestionEngine do
         allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::QUESTIONS_SCHEMA).and_return(api_response)
 
         questions = engine.extract(text)
-        expect(questions).to be_an(Array)
+        expect(questions).to be_a(Array)
         expect(questions).not_to be_empty
         expect(questions).to all(include('type', 'question', 'priority', 'relevance', 'explanation'))
       end

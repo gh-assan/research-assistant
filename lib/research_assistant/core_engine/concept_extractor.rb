@@ -23,7 +23,11 @@ module ResearchAssistant
       private
 
       def parse_response(response)
-        json_api_client.query(response, Models::CONCEPTS_SCHEMA)
+        concepts = json_api_client.query(response, Models::CONCEPTS_SCHEMA)
+        concepts..is_a?(Hash) ? concepts['concepts'] : concepts
+      rescue StandardError => e
+        pp " Error in parsing concepts #{e}"
+        return [] 
       end
     end
   end

@@ -12,7 +12,8 @@ module ResearchAssistant
       property :knowledge_integrator
       property :output_generator
 
-      def initialize(api_client, json_api_client, writer_api_client)
+      def initialize(api_client, json_api_client, writer_api_client, research_id)
+        @file_manager ||= ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
         @progress_tracker ||= ProgressTracker.new
         @depth_adjuster ||= DepthAdjuster.new
         @focus_prioritizer ||= FocusPrioritizer.new
@@ -36,7 +37,7 @@ module ResearchAssistant
           # Integrate knowledge
           round_knowledge = knowledge_integrator.integrate(round_knowledge.topic, round_knowledge.article, round_knowledge.user_intent, iteration_number)
 
-          iteration_number = knowledge.iteration + 1
+          iteration_number = iteration_number + 1
 
           article = output_generator.generate_article(round_knowledge)
 
@@ -45,7 +46,7 @@ module ResearchAssistant
           pp "iteration : #{round_knowledge.iteration}"
 
           # Save iteration data
-          # file_manager.save_iteration(iteration_number, { questions: questions, responses: responses })
+          file_manager.save_iteration(round_knowledge)
 
           # Update feedback system
           # feedback_system.update(analysis, iteration_number)

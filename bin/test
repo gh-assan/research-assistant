@@ -34,7 +34,8 @@ def main
   iteration_manager = ResearchAssistant::CoreEngine::IterationManager.new(
     api_client,
     json_api_client,
-    writer_api_client
+    writer_api_client,
+    research_id
   )
 
   pp "Run research on topic: #{topic}"
