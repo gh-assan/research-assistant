@@ -12,7 +12,7 @@ module ResearchAssistant
       property :last_round_article, accepts: String
       property :user_intent, accepts: String
       property :topic, accepts: String
-      property :iteration, accepts: Integer
+      property :iteration, accepts: Integer, default: 1
     end
   end
 end

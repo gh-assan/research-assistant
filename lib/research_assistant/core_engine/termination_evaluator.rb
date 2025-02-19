@@ -1,3 +1,5 @@
+require_relative 'models/response_schema_prompt'
+
 module ResearchAssistant
   module CoreEngine
     class TerminationEvaluator

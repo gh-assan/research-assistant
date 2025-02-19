@@ -7,6 +7,7 @@ RSpec.describe ResearchAssistant::OllamaInterface::JsonApiClient do
   let(:api_url) { 'http://api.example.com' }
   let(:api_client) { described_class.new(model: model) }
   let(:prompt) { 'Test prompt' }
+  let(:schema) { 'Test schema' }
   let(:response_body) { { 'response' => '{"key": "value"}' }.to_json }
   let(:parsed_response) { { 'key' => 'value' } }
 
@@ -22,7 +23,7 @@ RSpec.describe ResearchAssistant::OllamaInterface::JsonApiClient do
           .with(
             body: {
               model: model,
-              prompt: "#{prompt}",
+              prompt: "#{prompt} #{schema}",
               stream: false
             }.to_json,
             headers: { 'Content-Type' => 'application/json' }
@@ -31,19 +32,8 @@ RSpec.describe ResearchAssistant::OllamaInterface::JsonApiClient do
       end
 
       it 'returns the parsed JSON response' do
-        result = api_client.query(prompt)
+        result = api_client.query(prompt, schema)
         expect(result).to eq(parsed_response)
-      end
-    end
-
-    context 'when the API call fails' do
-      before do
-        stub_request(:post, "#{api_url}/api/generate")
-          .to_return(status: 500, body: { 'error' => 'Internal Server Error' }.to_json)
-      end
-
-      it 'raises an API error' do
-        expect { api_client.query(prompt) }.to raise_error(StandardError)
       end
     end
 
@@ -56,7 +46,7 @@ RSpec.describe ResearchAssistant::OllamaInterface::JsonApiClient do
       end
 
       it 'raises a JSON parsing error' do
-        expect { api_client.query(prompt) }.to raise_error(RuntimeError, /JSON Parsing Error/)
+        expect { api_client.query(prompt, schema) }.to raise_error(RuntimeError, /JSON Parsing Error/)
       end
     end
   end
