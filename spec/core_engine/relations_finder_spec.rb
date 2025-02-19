@@ -10,10 +10,12 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
   let(:topic) { 'sample topic.' }
   let(:analysis) { { insights: [], core_concepts: [], knowledge_gaps: [] } }
   let(:api_response) {
-    [
-      { 'insight' => 'The sky is blue.', 'classification' => 'associative', 'significance' => 'It describes the color of the sky.' },
-      { 'insight' => 'The sun is bright.', 'classification' => 'causal', 'significance' => 'It describes the brightness of the sun.' }
-    ]
+    {
+      'relationships' => [
+        { 'insight' => 'The sky is blue.', 'classification' => 'associative', 'significance' => 'It describes the color of the sky.' },
+        { 'insight' => 'The sun is bright.', 'classification' => 'causal', 'significance' => 'It describes the brightness of the sun.' }
+      ]
+    }
   }
 
   describe '#find_relations' do
@@ -23,7 +25,7 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
         allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::RELATIONS_SCHEMA).and_return(api_response)
 
         relations = finder.find_relations(topic, text, analysis)
-        expect(relations).to be_an(Array)
+        expect(relations).to be_a(Array)
         expect(relations).not_to be_empty
         expect(relations).to all(include('insight', 'classification', 'significance'))
       end

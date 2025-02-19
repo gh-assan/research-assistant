@@ -9,10 +9,12 @@ RSpec.describe ResearchAssistant::CoreEngine::GapDetector do
   let(:analysis) { { insights: [], core_concepts: [], knowledge_gaps: [] } }
   let(:response) { 'This is a sample response.' }
   let(:api_response) {
-    [
-      { 'insight' => 'Missing foundational concept.', 'classification' => 'foundational', 'significance' => 'It is crucial for the analysis.' },
-      { 'insight' => 'Lack of critical analysis.', 'classification' => 'critical', 'significance' => 'It is important for thorough understanding.' }
-    ]
+    {
+      'knowledge_gaps' => [
+        { 'insight' => 'Missing foundational concept.', 'classification' => 'foundational', 'significance' => 'It is crucial for the analysis.' },
+        { 'insight' => 'Lack of critical analysis.', 'classification' => 'critical', 'significance' => 'It is important for thorough understanding.' }
+      ]
+    }
   }
 
   describe '#detect' do
@@ -22,7 +24,7 @@ RSpec.describe ResearchAssistant::CoreEngine::GapDetector do
         allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::GAPS_SCHEMA).and_return(api_response)
 
         gaps = detector.detect(analysis, response)
-        expect(gaps).to be_an(Array)
+        expect(gaps).to be_a(Array)
         expect(gaps).not_to be_empty
         expect(gaps).to all(include('insight', 'classification', 'significance'))
       end

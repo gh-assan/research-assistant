@@ -9,10 +9,12 @@ RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
   let(:text) { 'The sky is blue and the sun is bright.' }
   let(:topic) { 'sample topic.' }
   let(:response_body) {
-    [
-      { 'insight' => 'The sky is blue.', 'classification' => 'foundational', 'significance' => 'It describes the color of the sky.' },
-      { 'insight' => 'The sun is bright.', 'classification' => 'critical', 'significance' => 'It describes the brightness of the sun.' }
-    ]
+    {
+      'insights' => [
+        { 'insight' => 'The sky is blue.', 'classification' => 'foundational', 'significance' => 'It describes the color of the sky.' },
+        { 'insight' => 'The sun is bright.', 'classification' => 'critical', 'significance' => 'It describes the brightness of the sun.' }
+      ]
+    }
   }
 
   describe '#analyze' do
@@ -22,7 +24,7 @@ RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
         allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::Models::INSIGHTS_SCHEMA).and_return(response_body)
 
         result = analyzer.analyze(topic, text)
-        expect(result).to be_an(Array)
+        expect(result).to be_a(Array)
         expect(result).not_to be_empty
         expect(result).to all(include('insight', 'classification', 'significance'))
       end

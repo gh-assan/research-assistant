@@ -9,12 +9,14 @@ RSpec.describe ResearchAssistant::CoreEngine::ConceptExtractor do
   let(:text) { 'The sky is blue and the sun is bright.' }
   let(:topic) { 'This is a sample topic.' }
   let(:response_body) {
-    [
-      { 'concept' => 'sky', 'relevance' => 'foundational' },
-      { 'concept' => 'blue', 'relevance' => 'critical' },
-      { 'concept' => 'sun', 'relevance' => 'counterfactual' },
-      { 'concept' => 'bright', 'relevance' => 'synthesis' }
-    ]
+    {
+      'concepts' => [
+        { 'concept' => 'sky', 'relevance' => 'foundational' },
+        { 'concept' => 'blue', 'relevance' => 'critical' },
+        { 'concept' => 'sun', 'relevance' => 'counterfactual' },
+        { 'concept' => 'bright', 'relevance' => 'synthesis' }
+      ]
+    }
   }
 
   describe '#extract' do
@@ -24,7 +26,7 @@ RSpec.describe ResearchAssistant::CoreEngine::ConceptExtractor do
         allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::Models::CONCEPTS_SCHEMA).and_return(response_body)
 
         concepts = extractor.extract(topic, text)
-        expect(concepts).to be_an(Array)
+        expect(concepts).to be_a(Array)
         expect(concepts).not_to be_empty
         expect(concepts).to all(include('concept', 'relevance'))
       end
