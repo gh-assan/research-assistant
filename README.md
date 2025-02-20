@@ -15,8 +15,8 @@
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/layered-research.git
-    cd layered-research
+    git clone https://github.com/gh-assan/research-assistant.git
+    cd research-assistant
     ```
 
 2. Install dependencies:
@@ -65,23 +65,5 @@ The InsightsExtractor module analyzes responses to extract insights. It categori
 The KnowledgeIntegrator module integrates new knowledge into the existing analysis. It combines insights, concepts, gaps, questions, and relationships to form a comprehensive understanding.
 
 ### Output Generation
-The OutputGenerator module formats research outputs into different formats like Markdown, LaTeX, and HTML. It ensures that the generated content is well-structured and readable.
+The OutputGenerator module will write the generated article into the file system, each iteration data will be written into a new folder.
 
-
-## Contributing
-
-Contributions are welcome! Please follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Make your changes and commit them with a descriptive message.
-4. Push your changes to your fork.
-5. Create a pull request to the main repository.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Acknowledgements
-
-We would like to thank all the contributors and the open-source community for their support and contributions to this project.
