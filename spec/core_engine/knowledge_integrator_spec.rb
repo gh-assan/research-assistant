@@ -13,11 +13,11 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
   let(:last_round_article) { 'This is the last round article.' }
   let(:user_intent) { 'Write a detailed article about climate change.' }
   let(:iteration_number) { 1 }
-  let(:insights) { { 'insights' => ['Insight 1', 'Insight 2'] } }
-  let(:concepts) { { 'concepts' => ['Concept 1', 'Concept 2'] } }
-  let(:gaps) { { 'knowledge_gaps' => ['Gap 1', 'Gap 2'] } }
-  let(:questions) { { 'questions' => ['Question 1', 'Question 2'] } }
-  let(:relations) { { 'relations' => ['Relation 1', 'Relation 2'] } }
+  let(:insights) { ['Insight 1', 'Insight 2'] }
+  let(:concepts) { ['Concept 1', 'Concept 2'] }
+  let(:gaps) { ['Gap 1', 'Gap 2'] }
+  let(:questions) { ['Question 1', 'Question 2'] }
+  let(:relations) { ['Relation 1', 'Relation 2'] }
 
   describe '#integrate' do
     context 'when all API requests are successful' do
@@ -30,11 +30,11 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
 
         knowledge = integrator.integrate(topic, last_round_article, user_intent, iteration_number)
 
-        expect(knowledge.insights).to eq(insights['insights'])
-        expect(knowledge.concepts).to eq(concepts['concepts'])
-        expect(knowledge.knowledge_gaps).to eq(gaps['knowledge_gaps'])
-        expect(knowledge.questions).to eq(questions['questions'])
-        expect(knowledge.relations).to eq(relations['relations'])
+        expect(knowledge.insights).to eq(insights)
+        expect(knowledge.concepts).to eq(concepts)
+        expect(knowledge.knowledge_gaps).to eq(gaps)
+        expect(knowledge.questions).to eq(questions)
+        expect(knowledge.relations).to eq(relations)
         expect(knowledge.user_intent).to eq(user_intent)
         expect(knowledge.iteration).to eq(iteration_number)
         expect(knowledge.last_round_article).to eq(last_round_article)

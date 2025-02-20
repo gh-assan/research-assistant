@@ -77,12 +77,13 @@ def main
   # pp article
 
    knowledge = ResearchAssistant::KnowledgeBase::Knowledge.new
-    knowledge.iteration = 1
-    knowledge.topic = topic
-    knowledge.user_intent = prompt
-  round_knowledge = iteration_manager.run(knowledge)
+   knowledge.iteration = 1
+   knowledge.topic = topic
+   knowledge.user_intent = prompt
 
-  pp "article : #{round_knowledge.article}"
+  iteration_manager.run(knowledge)
+
+  pp "job done"
 end
 
 main if __FILE__ == $0
