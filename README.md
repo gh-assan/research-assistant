@@ -24,17 +24,22 @@
     bundle install
     ```
 
-3. Set up JSON model:
+3. Install the Ollama CLI:
+    ```sh
+    install Olamma from https://ollama.com/
+    ```
+
+4. Set up JSON model:
     ```sh
     ollama create research-assistant-json-model -f models/JsonModelfile
     ```
 
-4. Set up writer model:
+5. Set up writer model:
     ```sh
     ollama create research-assistant-writer-model -f models/WriterModelfile
     ```
 
-5. Set up reasoning model:
+6. Set up reasoning model:
     ```sh
     ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
     ```
@@ -44,7 +49,7 @@
 You can initiate research processes using the command-line interface:
 
 ```sh
-bin/research "sky is blue"
+bin/research "will AI take over developer role soon"
 ```
 
 ## Components

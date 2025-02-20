@@ -26,7 +26,7 @@ module ResearchAssistant
         relationships = json_api_client.query(response, Models::RELATIONS_SCHEMA)
         relationships..is_a?(Hash) ? relationships['relationships'] : relationships
       rescue StandardError => e
-        pp " Error in parsing relationships #{e}"
+        pp " Error in parsing relationships #{e.message}"
         return []
       end
     end
