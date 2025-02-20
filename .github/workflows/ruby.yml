@@ -1,0 +1,29 @@
+name: Ruby CI
+
+on:
+  pull_request:
+    branches:
+      - main # Set the branch name to trigger the workflow.
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0  # Set the Ruby version to use.
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Run tests
+      run: |
+        bundle exec rspec  # Run the test suite.
