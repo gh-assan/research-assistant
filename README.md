@@ -47,7 +47,6 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
 
 ## Usage
 
-### Command-Line Interface
 
 You can initiate research processes using the command-line interface:
 
