@@ -1,7 +1,7 @@
 # config/settings.yml
 ollama:
   base_url: "http://localhost:11434"
-  model: "deepseek-r1:8b"
+  model: "research-assistant-reasoning-model"
   parameters:
     temperature: 0.7
     top_p: 0.9

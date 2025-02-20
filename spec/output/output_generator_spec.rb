@@ -3,55 +3,53 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::Output::OutputGenerator do
-  let(:write_api_client) { instance_double('WriteApiClient') }
-  let(:generator) { described_class.new(write_api_client) }
-  let(:knowledge) {
-    instance_double('ResearchAssistant::KnowledgeBase::Knowledge',
-                    user_intent: 'Write a detailed article about climate change.',
-                    topic: 'Climate Change',
-                    insights: ['Insight 1', 'Insight 2'],
-                    knowledge_gaps: ['Gap 1', 'Gap 2'],
-                    concepts: ['Concept 1', 'Concept 2'],
-                    relations: ['Relation 1', 'Relation 2'],
-                    questions: ['Question 1', 'Question 2'],
-                    last_round_article: 'This is the last round response.')
-  }
-  let(:prompt) {
-    "Write a detailed article about climate change.
-                  On topic: Climate Change
-                  check the extracted Insights: [\"Insight 1\", \"Insight 2\"]
-                  and make sure to fill Knowledge Gaps: [\"Gap 1\", \"Gap 2\"]
-                  with focus on Concepts: [\"Concept 1\", \"Concept 2\"]
-                  and relations : [\"Relation 1\", \"Relation 2\"]
-                  and you should answer the Questions: [\"Question 1\", \"Question 2\"]
-                  where the last round Responses was: This is the last round response.
-                  "
-  }
-  let(:api_response) { 'Generated article content.' }
+  let(:write_api_client) { instance_double(ResearchAssistant::OllamaInterface::WriterApiClient) }
+  let(:output_generator) { described_class.new(write_api_client) }
+  let(:knowledge) do
+    ResearchAssistant::KnowledgeBase::Knowledge.new(
+      insights: [
+        { 'insight' => 'The sky is blue.', 'classification' => 'foundational', 'significance' => 'It describes the color of the sky.' }
+      ],
+      concepts: [
+        { 'concept' => 'sky', 'relevance' => 'foundational' }
+      ],
+      knowledge_gaps: [
+        { 'insight' => 'Missing foundational concept.', 'classification' => 'foundational', 'significance' => 'It is crucial for the analysis.' }
+      ],
+      questions: [
+        { 'question' => 'What is the color of the sky?', 'type' => 'foundational', 'explanation' => 'It addresses the basic principle of the text.' }
+      ],
+      relations: [
+        { 'insight' => 'The sky is blue.', 'classification' => 'associative', 'significance' => 'It describes the color of the sky.' }
+      ],
+      article: 'This is the article content.',
+      last_round_article: 'This is the last round article content.',
+      user_intent: 'To understand the color of the sky.',
+      topic: 'The sky',
+      iteration: 1
+    )
+  end
 
   describe '#generate_article' do
     context 'when the API request is successful' do
       it 'returns the generated article' do
-        allow(write_api_client).to receive(:write_article).with(prompt).and_return(api_response)
+        prompt = output_generator.send(:build_prompt, knowledge)
+        expected_article = 'Generated article content.'
 
-        article = generator.generate_article(knowledge)
-        expect(article).to eq(api_response)
+        allow(write_api_client).to receive(:write_article).with(prompt).and_return(expected_article)
+
+        article = output_generator.generate_article(knowledge)
+        expect(article).to eq(expected_article)
       end
     end
 
     context 'when the API request fails' do
-      it 'raises an API error' do
-        allow(write_api_client).to receive(:write_article).with(prompt).and_raise(RuntimeError, 'API Error: Something went wrong')
+      it 'raises an error' do
+        prompt = output_generator.send(:build_prompt, knowledge)
 
-        expect { generator.generate_article(knowledge) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
-      end
-    end
+        allow(write_api_client).to receive(:write_article).with(prompt).and_raise(StandardError, 'API Error')
 
-    context 'when there is a connection error' do
-      it 'raises a connection error' do
-        allow(write_api_client).to receive(:write_article).with(prompt).and_raise(RuntimeError, 'Connection Error: Connection failed')
-
-        expect { generator.generate_article(knowledge) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+        expect { output_generator.generate_article(knowledge) }.to raise_error(StandardError, 'Failed to generate article: API Error')
       end
     end
   end

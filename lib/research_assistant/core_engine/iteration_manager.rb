@@ -8,18 +8,13 @@ module ResearchAssistant
       property :depth_adjuster
       property :focus_prioritizer
       property :termination_evaluator
-      property :feedback_system
       property :knowledge_integrator
       property :output_generator
 
       def initialize(api_client, json_api_client, writer_api_client, research_id)
         @file_manager ||= ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
-        @progress_tracker ||= ProgressTracker.new
-        @depth_adjuster ||= DepthAdjuster.new
-        @focus_prioritizer ||= FocusPrioritizer.new
         @termination_evaluator ||= TerminationEvaluator.new(api_client, json_api_client)
         @output_generator ||= ResearchAssistant::Output::OutputGenerator.new(writer_api_client)
-        @feedback_system ||= FeedbackSystem.new
         @knowledge_integrator ||= KnowledgeIntegrator.new(
           insights_extractor: InsightsExtractor.new(api_client, json_api_client),
           concept_extractor: ConceptExtractor.new(api_client, json_api_client),

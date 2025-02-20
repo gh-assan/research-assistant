@@ -22,7 +22,7 @@ module ResearchAssistant
       @max_iterations = ENV.fetch('MAX_ITERATIONS', 10).to_i
       @log_level = ENV.fetch('LOG_LEVEL', 'info')
       @research_dir = ENV.fetch('RESEARCH_DIR', 'research')
-      @ollama_model = ENV.fetch('OLLAMA_MODEL', 'deepseek-r1:8b')
+      @ollama_model = ENV.fetch('OLLAMA_MODEL', 'research-assistant-reasoning-model')
       @json_model = ENV.fetch('OLLAMA_MODEL', 'research-assistant-json-model')
       @writer_model = ENV.fetch('OLLAMA_MODEL', 'research-assistant-writer-model')
     end

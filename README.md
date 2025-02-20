@@ -26,22 +26,22 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
     bundle install
     ```
 
-3. Set up the database:
-    ```sh
-    rake db:setup
-    ```
-
-4. Configure settings:
+3. Configure settings:
     Update the [settings.yml](http://_vscodecontentref_/0) file with your configuration settings.
 
-5. set up json model 
+4. set up json model 
 ```shell
-  ollama create research-assistant-json-model -f Modelfile
+  ollama create research-assistant-json-model -f models/JsonModelfile
 ```
 
 5. set up writer model
 ```shell
-  ollama create research-assistant-writer-model -f WriterModelfile
+  ollama create research-assistant-writer-model -f models/WriterModelfile
+```
+
+6. set up reasoning model
+```shell
+  ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
 ```
 
 
@@ -52,4 +52,4 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
 You can initiate research processes using the command-line interface:
 
 ```sh
-bin/research.rb
+bin/research "sky is blue"

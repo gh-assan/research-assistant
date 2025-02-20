@@ -22,7 +22,7 @@ module ResearchAssistant
       end
 
       def min_score_met?(knowledge)
-        score(knowledge.user_intent, knowledge.article) >= 90
+        score(knowledge.user_intent, knowledge.article) >= 90 && knowledge.iteration > 1
       end
 
       def score(topic, text)
@@ -36,7 +36,7 @@ module ResearchAssistant
                   "
         response = api_client.query(prompt)
         s= parse_response(response)
-        pp s
+        pp  "score of the current iteration article is #{s}"
 
         if  s.nil?
           return 1
@@ -50,7 +50,7 @@ module ResearchAssistant
 
       def objectives_met?(knowledge)
 
-        if knowledge.knowledge_gaps.nil?
+        if knowledge.knowledge_gaps.nil? || knowledge.iteration < 2
           return false
         end
 

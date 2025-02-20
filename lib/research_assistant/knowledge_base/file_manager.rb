@@ -22,6 +22,8 @@ module ResearchAssistant
         File.write(File.join(iteration_dir, 'insights.json'), JSON.pretty_generate(knowledge.insights))
         File.write(File.join(iteration_dir, 'knowledge_gaps.json'), JSON.pretty_generate(knowledge.knowledge_gaps))
         File.write(File.join(iteration_dir, 'relations.json'), JSON.pretty_generate(knowledge.relations))
+
+        pp "Iteration data saved to #{iteration_dir}"
       end
     end
   end
