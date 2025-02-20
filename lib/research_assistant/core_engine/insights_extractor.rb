@@ -32,7 +32,7 @@ module ResearchAssistant
         insights = json_api_client.query(response, Models::INSIGHTS_SCHEMA)
         insights..is_a?(Hash) ? insights['insights'] : insights
       rescue StandardError => e
-        pp " Error in parsing insights #{e}"
+        pp " Error in parsing insights #{e.message}"
         return []
       end
     end

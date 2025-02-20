@@ -29,7 +29,7 @@ module ResearchAssistant
         questions = json_api_client.query(response, Models::QUESTIONS_SCHEMA)
         questions..is_a?(Hash) ? questions['questions'] : questions
       rescue StandardError => e
-        pp " Error in parsing Questions #{e}"
+        pp " Error in parsing Questions #{e.message}"
         return []
       end
     end
