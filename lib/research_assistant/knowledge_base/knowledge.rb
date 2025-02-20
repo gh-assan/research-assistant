@@ -13,6 +13,7 @@ module ResearchAssistant
       property :user_intent, accepts: String, default: ""
       property :topic, accepts: String, default: ""
       property :iteration, accepts: Integer, default: 1
+      property :max_iterations, accepts: Integer, default: 5
     end
   end
 end

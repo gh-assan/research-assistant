@@ -1,7 +1,6 @@
-# layer-research
-# Layered Research Assistant
+# Research Assistant
 
-Layered Research Assistant is a tool designed to facilitate iterative research processes. It includes various components for managing research data, generating questions, analyzing responses, and integrating knowledge.
+ Research Assistant is a tool designed to facilitate iterative research processes. It includes various components for managing research data, generating questions, analyzing responses, and integrating knowledge.
 
 ## Features
 
@@ -10,15 +9,14 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
 - **Iteration Management**: Manages iterative research processes.
 - **Response Analysis**: Analyzes responses to extract insights.
 - **Knowledge Integration**: Integrates new knowledge into the existing analysis.
-- **Output Generation**: Formats research outputs into different formats like Markdown, LaTeX, and HTML.
-- **Validation**: Uses `dry-validation` schemas to validate various data structures.
+- **Output Generation**: write the research output into the file system.
 
 ## Installation
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/layered-research.git
-    cd layered-research
+    git clone https://github.com/gh-assan/research-assistant.git
+    cd research-assistant
     ```
 
 2. Install dependencies:
@@ -26,29 +24,46 @@ Layered Research Assistant is a tool designed to facilitate iterative research p
     bundle install
     ```
 
-3. Configure settings:
-    Update the [settings.yml](http://_vscodecontentref_/0) file with your configuration settings.
+3. Set up JSON model:
+    ```sh
+    ollama create research-assistant-json-model -f models/JsonModelfile
+    ```
 
-4. set up json model 
-```shell
-  ollama create research-assistant-json-model -f models/JsonModelfile
-```
+4. Set up writer model:
+    ```sh
+    ollama create research-assistant-writer-model -f models/WriterModelfile
+    ```
 
-5. set up writer model
-```shell
-  ollama create research-assistant-writer-model -f models/WriterModelfile
-```
-
-6. set up reasoning model
-```shell
-  ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
-```
-
+5. Set up reasoning model:
+    ```sh
+    ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
+    ```
 
 ## Usage
-
 
 You can initiate research processes using the command-line interface:
 
 ```sh
 bin/research "sky is blue"
+```
+
+## Components
+
+### Concept Extraction
+The ConceptExtractor module extracts key concepts and relationships from a given topic. It uses natural language processing techniques to identify and categorize important concepts.
+
+### Question Generation
+The QuestionEngine module generates research questions based on the analysis of the provided text. It helps in identifying gaps and areas that require further investigation.
+
+### Iteration Management
+The IterationManager module manages the iterative research process. It integrates new knowledge, generates articles, and saves iteration data.
+
+### Response Analysis
+The InsightsExtractor module analyzes responses to extract insights. It categorizes insights based on their significance and relevance to the topic.
+
+### Knowledge Integration
+The KnowledgeIntegrator module integrates new knowledge into the existing analysis. It combines insights, concepts, gaps, questions, and relationships to form a comprehensive understanding.
+
+### Output Generation
+The OutputGenerator module will write the generated article into the file system, each iteration data will be written into a new folder.
+

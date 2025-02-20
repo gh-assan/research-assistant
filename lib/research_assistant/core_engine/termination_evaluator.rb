@@ -18,7 +18,7 @@ module ResearchAssistant
       private
 
       def max_iterations_reached?(knowledge)
-        knowledge.iteration >= 2
+        knowledge.iteration >= knowledge.max_iterations
       end
 
       def min_score_met?(knowledge)

@@ -1,51 +1,123 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
   let(:api_client) { instance_double(ResearchAssistant::OllamaInterface::ApiClient) }
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
-  let(:evaluator) { described_class.new(api_client, json_api_client) }
-  let(:knowledge) {
-    instance_double('ResearchAssistant::KnowledgeBase::Knowledge',
-                    knowledge_gaps: [],
-                    user_intent: 'Write a detailed article about climate change.',
-                    article: 'This is the article content.',
-                    iteration: 2)
-  }
-  let(:score_response) { { 'rank' => 95 } }
+  let(:termination_evaluator) { described_class.new(api_client, json_api_client) }
+  let(:knowledge) do
+    ResearchAssistant::KnowledgeBase::Knowledge.new(
+      insights: [],
+      concepts: [],
+      relations: [],
+      knowledge_gaps: [],
+      questions: [],
+      article: 'This is the article content.',
+      user_intent: 'Understand the topic.',
+      topic: 'Sample Topic',
+      iteration: 1,
+      max_iterations: 5
+    )
+  end
 
   describe '#should_terminate?' do
     context 'when objectives are met' do
       it 'returns true' do
-        allow(knowledge).to receive(:knowledge_gaps).and_return([])
-        expect(evaluator.should_terminate?(knowledge)).to be true
+        knowledge.knowledge_gaps = []
+        knowledge.iteration = 2
+
+        expect(termination_evaluator.should_terminate?(knowledge)).to be true
       end
     end
 
-    context 'when minimum score is met' do
+    context 'when max iterations are reached' do
       it 'returns true' do
-        allow(api_client).to receive(:query).and_return(score_response.to_json)
-        allow(json_api_client).to receive(:query).with(score_response.to_json, ResearchAssistant::CoreEngine::Models::RANK_SCHEMA).and_return(score_response)
+        knowledge.iteration = 5
 
-        expect(evaluator.should_terminate?(knowledge)).to be true
+        expect(termination_evaluator.should_terminate?(knowledge)).to be true
       end
     end
 
-    context 'when maximum iterations are reached' do
+    context 'when min score is met' do
       it 'returns true' do
-        allow(knowledge).to receive(:iteration).and_return(2)
-        expect(evaluator.should_terminate?(knowledge)).to be true
+        knowledge.iteration = 2
+        allow(api_client).to receive(:query).and_return('{"rank": 95}')
+        allow(json_api_client).to receive(:query).and_return('rank' => 95)
+
+        expect(termination_evaluator.should_terminate?(knowledge)).to be true
       end
     end
 
-    context 'when objectives are not met and minimum score is not met' do
+    context 'when none of the termination conditions are met' do
       it 'returns false' do
-        allow(knowledge).to receive(:iteration).and_return(1)
-        allow(knowledge).to receive(:knowledge_gaps).and_return(['Gap 1'])
-        allow(api_client).to receive(:query).and_return(score_response.to_json)
-        allow(json_api_client).to receive(:query).with(score_response.to_json, ResearchAssistant::CoreEngine::Models::RANK_SCHEMA).and_return({ 'rank' => 85 })
+        knowledge.iteration = 1
+        allow(api_client).to receive(:query).and_return('{"rank": 85}')
+        allow(json_api_client).to receive(:query).and_return('rank' => 85)
 
-        expect(evaluator.should_terminate?(knowledge)).to be false
+        expect(termination_evaluator.should_terminate?(knowledge)).to be false
       end
+    end
+  end
+
+  describe '#max_iterations_reached?' do
+    it 'returns true when max iterations are reached' do
+      knowledge.iteration = 5
+      expect(termination_evaluator.send(:max_iterations_reached?, knowledge)).to be true
+    end
+
+    it 'returns false when max iterations are not reached' do
+      knowledge.iteration = 3
+      expect(termination_evaluator.send(:max_iterations_reached?, knowledge)).to be false
+    end
+  end
+
+  describe '#min_score_met?' do
+    it 'returns true when the score is greater than or equal to 90 and iteration is greater than 1' do
+      knowledge.iteration = 2
+      allow(api_client).to receive(:query).and_return('{"rank": 90}')
+      allow(json_api_client).to receive(:query).and_return('rank' => 90)
+
+      expect(termination_evaluator.send(:min_score_met?, knowledge)).to be true
+    end
+
+    it 'returns false when the score is less than 90' do
+      knowledge.iteration = 2
+      allow(api_client).to receive(:query).and_return('{"rank": 85}')
+      allow(json_api_client).to receive(:query).and_return('rank' => 85)
+
+      expect(termination_evaluator.send(:min_score_met?, knowledge)).to be false
+    end
+
+    it 'returns false when iteration is less than or equal to 1' do
+      knowledge.iteration = 1
+      allow(api_client).to receive(:query).and_return('{"rank": 95}')
+      allow(json_api_client).to receive(:query).and_return('rank' => 95)
+
+      expect(termination_evaluator.send(:min_score_met?, knowledge)).to be false
+    end
+  end
+
+  describe '#objectives_met?' do
+    it 'returns true when knowledge gaps are empty and iteration is greater than or equal to 2' do
+      knowledge.knowledge_gaps = []
+      knowledge.iteration = 2
+
+      expect(termination_evaluator.send(:objectives_met?, knowledge)).to be true
+    end
+
+    it 'returns false when knowledge gaps are not empty' do
+      knowledge.knowledge_gaps = ['Gap 1']
+      knowledge.iteration = 2
+
+      expect(termination_evaluator.send(:objectives_met?, knowledge)).to be false
+    end
+
+    it 'returns false when iteration is less than 2' do
+      knowledge.knowledge_gaps = []
+      knowledge.iteration = 1
+
+      expect(termination_evaluator.send(:objectives_met?, knowledge)).to be false
     end
   end
 end
