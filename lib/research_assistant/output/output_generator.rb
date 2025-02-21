@@ -16,25 +16,25 @@ module ResearchAssistant
 
       def build_prompt(knowledge)
         <<~PROMPT
-          User Intent: #{knowledge.user_intent}
-          Topic: #{knowledge.topic}
+          #{knowledge.user_intent}
+          On the Topic: #{knowledge.topic}
 
-          Insights:
+          Check the extracted Insights:
           #{format_section(knowledge.insights, 'insight', 'classification', 'significance')}
 
-          Concepts:
+          Define the following Concepts and their relevance:
           #{format_section(knowledge.concepts, 'concept', 'relevance')}
 
-          Knowledge Gaps:
+          Make sure to fill Knowledge Gaps with the following details:
           #{format_section(knowledge.knowledge_gaps, 'insight', 'classification', 'significance')}
 
-          Questions:
+          You should answer the Questions with the following details:
           #{format_section(knowledge.questions, 'question', 'type', 'explanation')}
 
-          Relationships:
+          Use the discovered Relationships to direct your analysis:
           #{format_section(knowledge.relations, 'insight', 'classification', 'significance')}
 
-          Last Round Article:
+          Check your last round Responses and build on top of it:
           #{knowledge.last_round_article}
         PROMPT
       end
