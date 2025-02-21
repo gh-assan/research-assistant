@@ -40,7 +40,7 @@ module ResearchAssistant
       end
 
       def format_section(items, *keys)
-        return "None" if items.empty?
+        return "None" if items.nil? || items.empty?
 
         items.map do |item|
           keys.map { |key| "#{key.capitalize}: #{item[key]}" }.join(", ")
