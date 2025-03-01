@@ -18,7 +18,7 @@ module ResearchAssistant
       private
 
       def extract_insights(topic, text)
-        prompt = "Analyze the following text and extract key insights
+        prompt = "Analyze the following text and extract key insights then think again and generate deeper insights. The insights should be of the following types:
                   Topic: #{topic}
                   Text: #{text}
                 "

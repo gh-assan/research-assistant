@@ -12,7 +12,7 @@ module ResearchAssistant
       end
 
       def extract(text)
-        prompt = "Please analyze the given text and generate questions to challenge the text. The questions should be of the following types:
+        prompt = "Please analyze the given text and generate questions to challenge the text then think again and generate deeper questions . The questions should be of the following types:
               Foundational Questions: Questions that address the basic principles and key concepts from the text.
               Critical Questions: Questions that examine the strength, weaknesses, or implications of the ideas presented.
               Counterfactual Questions: Questions that explore alternate scenarios or what could have been different if certain conditions changed.

@@ -10,7 +10,7 @@ module ResearchAssistant
       end
 
       def detect(analysis, response)
-        prompt = "Identify knowledge gaps in the following analysis based on the response: #{response}\n\nAnalysis: #{analysis}"
+        prompt = "Identify knowledge gaps in the following analysis based on the response: #{response}\n\nAnalysis: #{analysis} then think again and generate deeper gaps."
         api_response = @api_client.query(prompt)
         parse_response(api_response)
       end

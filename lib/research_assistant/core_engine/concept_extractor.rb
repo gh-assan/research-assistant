@@ -15,7 +15,7 @@ module ResearchAssistant
         prompt = "Extract key concepts from the following
                   Topic: #{topic}
                   text: #{text}
-                  "
+                  then think again and generate deeper concepts."
         response = api_client.query(prompt)
         parse_response(response)
       end

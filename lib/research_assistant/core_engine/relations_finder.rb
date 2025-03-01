@@ -12,7 +12,7 @@ module ResearchAssistant
       end
 
       def find_relations(topic, text, analysis)
-        prompt = "Please analyze the given text to identify relationships between concepts:
+        prompt = "Please analyze the given text to identify relationships between concepts, then think again and generate deeper relationships. The relationships should be of the following types:
                    Topic : #{topic},
                    Text : #{text},
                    Analysis: #{analysis}"
