@@ -1,9 +1,11 @@
 require 'json'
 require 'faraday'
+require_relative '../concerns/with_retry'
 
 module ResearchAssistant
   module OllamaInterface
     class JsonApiClient
+      include WithRetry
 
       attr_reader :model, :conn
 
@@ -18,24 +20,33 @@ module ResearchAssistant
       end
 
       def query(prompt, schema)
-        response = conn.post('/api/generate') do |req|
-          req.body = {
-            model: model,
-            prompt: "#{prompt} #{schema}",
-            stream: false
-          }
-        end
+        with_retry do
+          response = conn.post('/api/generate') do |req|
+            req.body = {
+              model: model,
+              prompt: "#{prompt} #{schema}",
+              stream: false
+            }
+          end
 
-        raise "API Error: #{response.body['error']}" unless response.success?
-
-        # Parse and return JSON response
-        begin
-          JSON.parse(response.body['response'])
-        rescue JSON::ParserError => e
-          raise "JSON Parsing Error: #{e.message}. Response body: #{response.body['response']}"
+          handle_response(response)
         end
       rescue Faraday::Error => e
         raise "Connection Error: #{e.message}"
+      end
+
+      private
+
+      def handle_response(response)
+        raise "API Error: #{response.body['error']}" unless response.success?
+
+        parse_json(response.body['response'])
+      end
+
+      def parse_json(response_body)
+        JSON.parse(response_body)
+      rescue JSON::ParserError => e
+        raise "JSON Parsing Error: #{e.message}. Response body: #{response_body}"
       end
     end
   end
