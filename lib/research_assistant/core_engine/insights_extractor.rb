@@ -27,10 +27,10 @@ module ResearchAssistant
         Push the boundaries of interpretation to reveal insights that are not immediately obvious, enriching the depth and originality of the analysis.
       PROMPT
 
-      attr_reader :api_client, :json_api_client
+      attr_reader :reasoning_api_client, :json_api_client
 
       def initialize(api_client, json_api_client)
-        @api_client = api_client
+        @reasoning_api_client = api_client
         @json_api_client = json_api_client
       end
 
@@ -42,7 +42,7 @@ module ResearchAssistant
 
       def extract_insights(topic, text)
         prompt = format(EXTRACT_INSIGHTS_PROMPT_TEMPLATE, topic: topic, text: text)
-        response = api_client.query(prompt)
+        response = reasoning_api_client.query(prompt)
         parse_response(response)
       end
 

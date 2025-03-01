@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
-  let(:api_client) { instance_double(ResearchAssistant::OllamaInterface::ApiClient) }
+  let(:reasoning_api_client) { instance_double(ResearchAssistant::OllamaInterface::ReasoningClient) }
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
-  let(:termination_evaluator) { described_class.new(api_client, json_api_client) }
+  let(:termination_evaluator) { described_class.new(reasoning_api_client, json_api_client) }
   let(:knowledge) do
     ResearchAssistant::KnowledgeBase::Knowledge.new(
       insights: [],
@@ -42,7 +42,7 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
     context 'when min score is met' do
       it 'returns true' do
         knowledge.iteration = 2
-        allow(api_client).to receive(:query).and_return('{"rank": 95}')
+        allow(reasoning_api_client).to receive(:query).and_return('{"rank": 95}')
         allow(json_api_client).to receive(:query).and_return('rank' => 95)
 
         expect(termination_evaluator.should_terminate?(knowledge)).to be true
@@ -52,7 +52,7 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
     context 'when none of the termination conditions are met' do
       it 'returns false' do
         knowledge.iteration = 1
-        allow(api_client).to receive(:query).and_return('{"rank": 85}')
+        allow(reasoning_api_client).to receive(:query).and_return('{"rank": 85}')
         allow(json_api_client).to receive(:query).and_return('rank' => 85)
 
         expect(termination_evaluator.should_terminate?(knowledge)).to be false
@@ -75,7 +75,7 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
   describe '#min_score_met?' do
     it 'returns true when the score is greater than or equal to 90 and iteration is greater than 1' do
       knowledge.iteration = 2
-      allow(api_client).to receive(:query).and_return('{"rank": 90}')
+      allow(reasoning_api_client).to receive(:query).and_return('{"rank": 90}')
       allow(json_api_client).to receive(:query).and_return('rank' => 90)
 
       expect(termination_evaluator.send(:min_score_met?, knowledge)).to be true
@@ -83,7 +83,7 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
 
     it 'returns false when the score is less than 90' do
       knowledge.iteration = 2
-      allow(api_client).to receive(:query).and_return('{"rank": 85}')
+      allow(reasoning_api_client).to receive(:query).and_return('{"rank": 85}')
       allow(json_api_client).to receive(:query).and_return('rank' => 85)
 
       expect(termination_evaluator.send(:min_score_met?, knowledge)).to be false
@@ -91,7 +91,7 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
 
     it 'returns false when iteration is less than or equal to 1' do
       knowledge.iteration = 1
-      allow(api_client).to receive(:query).and_return('{"rank": 95}')
+      allow(reasoning_api_client).to receive(:query).and_return('{"rank": 95}')
       allow(json_api_client).to receive(:query).and_return('rank' => 95)
 
       expect(termination_evaluator.send(:min_score_met?, knowledge)).to be false

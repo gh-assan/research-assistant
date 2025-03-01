@@ -39,16 +39,16 @@ module ResearchAssistant
         Generate multiple relationships across these categories, ensuring a rich, interdisciplinary, and thought-provoking exploration of conceptual interconnections.
       PROMPT
 
-      attr_reader :api_client, :json_api_client
+      attr_reader :reasoning_api_client, :json_api_client
 
-      def initialize(api_client, json_api_client)
-        @api_client = api_client
+      def initialize(reasoning_api_client, json_api_client)
+        @reasoning_api_client = reasoning_api_client
         @json_api_client = json_api_client
       end
 
       def find_relations(topic, text, analysis)
         prompt = format(FIND_RELATIONS_PROMPT_TEMPLATE, topic: topic, text: text, analysis: analysis)
-        response = api_client.query(prompt)
+        response = reasoning_api_client.query(prompt)
         parse_response(response)
       end
 

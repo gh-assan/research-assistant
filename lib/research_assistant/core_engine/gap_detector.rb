@@ -27,16 +27,16 @@ module ResearchAssistant
         Push the boundaries of conventional analysis to uncover gaps that others might miss.
       PROMPT
 
-      attr_reader :api_client, :json_api_client
+      attr_reader :reasoning_api_client, :json_api_client
 
-      def initialize(api_client, json_api_client)
-        @api_client = api_client
+      def initialize(reasoning_api_client, json_api_client)
+        @reasoning_api_client = reasoning_api_client
         @json_api_client = json_api_client
       end
 
       def detect(analysis, response)
         prompt = format(DETECT_PROMPT_TEMPLATE, analysis: analysis, response: response)
-        api_response = @api_client.query(prompt)
+        api_response = @reasoning_api_client.query(prompt)
         parse_response(api_response)
       end
 

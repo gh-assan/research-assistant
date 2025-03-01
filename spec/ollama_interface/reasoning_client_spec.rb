@@ -1,7 +1,7 @@
 require 'spec_helper'
 # require 'faraday'
 
-RSpec.describe ResearchAssistant::OllamaInterface::ApiClient do
+RSpec.describe ResearchAssistant::OllamaInterface::ReasoningClient do
   let(:model) { 'deepseek-coder' }
   let(:ollama_url) { 'http://localhost:11434' }
   let(:client) { described_class.new(model: model) }

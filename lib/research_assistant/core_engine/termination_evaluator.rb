@@ -21,10 +21,10 @@ module ResearchAssistant
         text: %<text>s
       PROMPT
 
-      attr_reader :api_client, :json_api_client
+      attr_reader :reasoning_api_client, :json_api_client
 
-      def initialize(api_client, json_api_client)
-        @api_client = api_client
+      def initialize(reasoning_api_client, json_api_client)
+        @reasoning_api_client = reasoning_api_client
         @json_api_client = json_api_client
       end
 
@@ -44,7 +44,7 @@ module ResearchAssistant
 
       def score(topic, text)
         prompt = format(SCORE_PROMPT_TEMPLATE, topic: topic, text: text)
-        response = api_client.query(prompt)
+        response = reasoning_api_client.query(prompt)
         parse_response = parse_response(response)
 
         rank = parse_response['rank']

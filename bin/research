@@ -11,13 +11,13 @@ def main
   research_id = SecureRandom.uuid
 
   # Initialize components
-  api_client = ResearchAssistant::OllamaInterface::ApiClient.new
+  reasoning_api_client = ResearchAssistant::OllamaInterface::ReasoningClient.new
   json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
   writer_api_client = ResearchAssistant::OllamaInterface::WriterApiClient.new
 
   user_intent_extractor = ResearchAssistant::CoreEngine::UserIntentExtractor.new(json_api_client)
   iteration_manager = ResearchAssistant::CoreEngine::IterationManager.new(
-    api_client,
+    reasoning_api_client,
     json_api_client,
     writer_api_client,
     research_id

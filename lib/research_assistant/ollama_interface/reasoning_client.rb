@@ -1,6 +1,6 @@
 module ResearchAssistant
   module OllamaInterface
-    class ApiClient
+    class ReasoningClient
 
       attr_reader :model, :conn
 

@@ -11,16 +11,16 @@ module ResearchAssistant
       property :knowledge_integrator
       property :output_generator
 
-      def initialize(api_client, json_api_client, writer_api_client, research_id)
+      def initialize(reasoning_api_client, json_api_client, writer_api_client, research_id)
         @file_manager ||= ResearchAssistant::KnowledgeBase::FileManager.new(research_id)
-        @termination_evaluator ||= TerminationEvaluator.new(api_client, json_api_client)
+        @termination_evaluator ||= TerminationEvaluator.new(reasoning_api_client, json_api_client)
         @output_generator ||= ResearchAssistant::Output::OutputGenerator.new(writer_api_client)
         @knowledge_integrator ||= KnowledgeIntegrator.new(
-          insights_extractor: InsightsExtractor.new(api_client, json_api_client),
-          concept_extractor: ConceptExtractor.new(api_client, json_api_client),
-          gap_detector: GapDetector.new(api_client, json_api_client),
-          questions_engine: QuestionEngine.new(api_client, json_api_client),
-          relations_finder: RelationsFinder.new(api_client, json_api_client)
+          insights_extractor: InsightsExtractor.new(reasoning_api_client, json_api_client),
+          concept_extractor: ConceptExtractor.new(reasoning_api_client, json_api_client),
+          gap_detector: GapDetector.new(reasoning_api_client, json_api_client),
+          questions_engine: QuestionEngine.new(reasoning_api_client, json_api_client),
+          relations_finder: RelationsFinder.new(reasoning_api_client, json_api_client)
         )
       end
 

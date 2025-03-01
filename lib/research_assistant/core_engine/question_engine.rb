@@ -38,16 +38,16 @@ module ResearchAssistant
         Generate multiple questions for each category, ensuring they provoke deeper thought and encourage critical engagement with the text.
       PROMPT
 
-      attr_reader :api_client, :json_api_client
+      attr_reader :reasoning_api_client, :json_api_client
 
-      def initialize(api_client, json_api_client)
-        @api_client = api_client
+      def initialize(reasoning_api_client, json_api_client)
+        @reasoning_api_client = reasoning_api_client
         @json_api_client = json_api_client
       end
 
       def extract(text)
         prompt = format(EXTRACT_QUESTIONS_PROMPT_TEMPLATE, text: text)
-        response = api_client.query(prompt)
+        response = reasoning_api_client.query(prompt)
         parse_response(response)
       end
 

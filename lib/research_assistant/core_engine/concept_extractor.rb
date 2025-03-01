@@ -26,16 +26,16 @@ module ResearchAssistant
         could lead to new research directions.
       PROMPT
 
-      attr_reader :api_client, :json_api_client
+      attr_reader :reasoning_api_client, :json_api_client
 
       def initialize(api_client, json_api_client)
-        @api_client = api_client
+        @reasoning_api_client = api_client
         @json_api_client = json_api_client
       end
 
       def extract(topic, text)
         prompt = format(EXTRACT_PROMPT_TEMPLATE, topic: topic, text: text)
-        response = api_client.query(prompt)
+        response = reasoning_api_client.query(prompt)
         parse_response(response)
       end
 
