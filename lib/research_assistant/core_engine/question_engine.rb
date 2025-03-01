@@ -1,8 +1,22 @@
-require_relative 'models/response_schema_prompt'
 module ResearchAssistant
   module CoreEngine
     class QuestionEngine
       include SmartProperties
+
+      QUESTIONS_SCHEMA = <<~PROMPT
+        Please analyze the given text to returns the questions in a structured response using the following format.:
+        {
+          "questions": [
+            {
+              "type": "foundational | critical | counterfactual | synthesis", 
+              "question": "A question based on the text.",
+              "priority": "high | medium | low", 
+              "relevance": "The relevance of the question to the analysis.",
+              "explanation": "A brief explanation of why this question of the type."
+            }
+          ]
+        }
+      PROMPT
 
       attr_reader :api_client, :json_api_client
 
@@ -26,7 +40,7 @@ module ResearchAssistant
       private
 
       def parse_response(response)
-        questions = json_api_client.query(response, Models::QUESTIONS_SCHEMA)
+        questions = json_api_client.query(response, QUESTIONS_SCHEMA)
         questions..is_a?(Hash) ? questions['questions'] : questions
       rescue StandardError => e
         pp " Error in parsing Questions #{e.message}"

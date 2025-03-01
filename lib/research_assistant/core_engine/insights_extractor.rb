@@ -1,9 +1,19 @@
-require_relative 'models/response_schema_prompt'
-
 module ResearchAssistant
   module CoreEngine
     class InsightsExtractor
-      
+
+      INSIGHTS_SCHEMA = <<~PROMPT
+        {
+          "insights": [
+            {
+              "insight": "A concise summary of the extracted concept from the text.",
+              "classification": "The category of the concept within the analysis. Possible values: foundational, critical, counterfactual, synthesis.",
+              "significance": "A brief explanation of why this insight is important or how it contributes to the overall analysis."
+            }
+          ]
+        }
+      PROMPT
+
       attr_reader :api_client, :json_api_client
 
       def initialize(api_client, json_api_client)
@@ -29,7 +39,7 @@ module ResearchAssistant
       private
 
       def parse_response(response)
-        insights = json_api_client.query(response, Models::INSIGHTS_SCHEMA)
+        insights = json_api_client.query(response, INSIGHTS_SCHEMA)
         insights..is_a?(Hash) ? insights['insights'] : insights
       rescue StandardError => e
         pp " Error in parsing insights #{e.message}"

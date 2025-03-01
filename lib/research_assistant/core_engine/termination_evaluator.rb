@@ -1,8 +1,15 @@
-require_relative 'models/response_schema_prompt'
-
 module ResearchAssistant
   module CoreEngine
     class TerminationEvaluator
+
+      RANK_SCHEMA = <<~PROMPT
+        Please analyze the text and assign a rank coming from the text . 
+        Provide the response in the following format:
+        {
+          "rank": value, 
+          "reasons": "A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement."
+        }
+      PROMPT
 
       attr_reader :api_client, :json_api_client
 
@@ -45,7 +52,7 @@ module ResearchAssistant
       end
 
       def parse_response(response)
-        json_api_client.query(response, Models::RANK_SCHEMA)['rank']
+        json_api_client.query(response, RANK_SCHEMA)['rank']
       end
 
       def objectives_met?(knowledge)

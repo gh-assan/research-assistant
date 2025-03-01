@@ -15,7 +15,7 @@ RSpec.describe ResearchAssistant::CoreEngine::UserIntentExtractor do
   describe '#create_prompt' do
     context 'when the API request is successful' do
       it 'returns the scientific article prompt' do
-        allow(json_api_client).to receive(:query).with(text, ResearchAssistant::CoreEngine::Models::USER_INTENT_SCHEMA).and_return(api_response)
+        allow(json_api_client).to receive(:query).with(text, ResearchAssistant::CoreEngine::UserIntentExtractor::USER_INTENT_SCHEMA).and_return(api_response)
 
         prompt = extractor.create_prompt(text)
         expect(prompt).to eq('Write a scientific article discussing the various effects of climate change on global weather patterns.')

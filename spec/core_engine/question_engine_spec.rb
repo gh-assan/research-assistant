@@ -20,7 +20,7 @@ RSpec.describe ResearchAssistant::CoreEngine::QuestionEngine do
     context 'when the API request is successful' do
       it 'returns the generated questions' do
         allow(api_client).to receive(:query).and_return(api_response.to_json)
-        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::QUESTIONS_SCHEMA).and_return(api_response)
+        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::QuestionEngine::QUESTIONS_SCHEMA).and_return(api_response)
 
         questions = engine.extract(text)
         expect(questions).to be_a(Array)

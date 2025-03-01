@@ -21,7 +21,7 @@ RSpec.describe ResearchAssistant::CoreEngine::GapDetector do
     context 'when the API request is successful' do
       it 'returns the detected knowledge gaps' do
         allow(api_client).to receive(:query).and_return(api_response.to_json)
-        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::GAPS_SCHEMA).and_return(api_response)
+        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::GapDetector::GAPS_SCHEMA).and_return(api_response)
 
         gaps = detector.detect(analysis, response)
         expect(gaps).to be_a(Array)

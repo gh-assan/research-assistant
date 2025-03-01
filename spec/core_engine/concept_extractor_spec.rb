@@ -23,7 +23,9 @@ RSpec.describe ResearchAssistant::CoreEngine::ConceptExtractor do
     context 'when the API request is successful' do
       it 'returns the extracted concepts' do
         allow(api_client).to receive(:query).and_return(response_body.to_json)
-        allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::Models::CONCEPTS_SCHEMA).and_return(response_body)
+        allow(json_api_client).to receive(:query).with(response_body.to_json,
+                                                       ResearchAssistant::CoreEngine::ConceptExtractor::CONCEPTS_SCHEMA)
+                                                 .and_return(response_body)
 
         concepts = extractor.extract(topic, text)
         expect(concepts).to be_a(Array)

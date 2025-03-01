@@ -22,7 +22,7 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
     context 'when the API request is successful' do
       it 'returns the identified relationships' do
         allow(api_client).to receive(:query).and_return(api_response.to_json)
-        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::Models::RELATIONS_SCHEMA).and_return(api_response)
+        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::RelationsFinder::RELATIONS_SCHEMA).and_return(api_response)
 
         relations = finder.find_relations(topic, text, analysis)
         expect(relations).to be_a(Array)

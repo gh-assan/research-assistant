@@ -21,7 +21,7 @@ RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
     context 'when the API request is successful' do
       it 'returns the analysis with extracted insights' do
         allow(api_client).to receive(:query).and_return(response_body.to_json)
-        allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::Models::INSIGHTS_SCHEMA).and_return(response_body)
+        allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::InsightsExtractor::INSIGHTS_SCHEMA).and_return(response_body)
 
         result = analyzer.analyze(topic, text)
         expect(result).to be_a(Array)
