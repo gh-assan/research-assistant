@@ -18,16 +18,9 @@ module ResearchAssistant
         }
       PROMPT
 
-      attr_reader :api_client, :json_api_client
-
-      def initialize(api_client, json_api_client)
-        @api_client = api_client
-        @json_api_client = json_api_client
-      end
-
-      def extract(text)
-        prompt = "Carefully analyze the given
-        text : #{text}
+      EXTRACT_QUESTIONS_PROMPT_TEMPLATE = <<~PROMPT
+        Carefully analyze the given
+        text : %<text>s
         -----------------------------------------
         Then,
         generate a set of thought-provoking questions to challenge its ideas. Your questions should be of the following types:
@@ -42,7 +35,18 @@ module ResearchAssistant
         Strengthening critical questions to challenge the text from multiple angles, including ethical, philosophical, and interdisciplinary perspectives.
         Expanding counterfactual questions to consider extreme, improbable, or futuristic scenarios.
         Elevating synthesis questions by combining ideas in unexpected ways to generate innovative research directions.
-        Generate multiple questions for each category, ensuring they provoke deeper thought and encourage critical engagement with the text."
+        Generate multiple questions for each category, ensuring they provoke deeper thought and encourage critical engagement with the text.
+      PROMPT
+
+      attr_reader :api_client, :json_api_client
+
+      def initialize(api_client, json_api_client)
+        @api_client = api_client
+        @json_api_client = json_api_client
+      end
+
+      def extract(text)
+        prompt = format(EXTRACT_QUESTIONS_PROMPT_TEMPLATE, text: text)
         response = api_client.query(prompt)
         parse_response(response)
       end
@@ -51,7 +55,7 @@ module ResearchAssistant
 
       def parse_response(response)
         questions = json_api_client.query(response, QUESTIONS_SCHEMA)
-        questions..is_a?(Hash) ? questions['questions'] : questions
+        questions.is_a?(Hash) ? questions['questions'] : questions
       rescue StandardError => e
         pp " Error in parsing Questions #{e.message}"
         return []

@@ -15,22 +15,27 @@ module ResearchAssistant
         }
       PROMPT
 
+      DETECT_PROMPT_TEMPLATE = <<~PROMPT
+        Analyze the following response and identify gaps in knowledge, overlooked perspectives, and areas needing further exploration.
+        Response: %<response>s
+        Analysis: %<analysis>s
+        ----------------------------------------
+        First, pinpoint missing data, weak arguments, or assumptions that need more evidence. Then, take a second pass—go beyond the surface. Think critically and creatively:
+        What unconventional angles or interdisciplinary insights might reveal deeper gaps?
+        Are there emerging trends, alternative theories, or speculative ideas that challenge the current understanding?
+        What questions remain unanswered, and how could they inspire new research directions?
+        Push the boundaries of conventional analysis to uncover gaps that others might miss.
+      PROMPT
+
       attr_reader :api_client, :json_api_client
+
       def initialize(api_client, json_api_client)
         @api_client = api_client
         @json_api_client = json_api_client
       end
 
       def detect(analysis, response)
-        prompt = "Analyze the following response and identify gaps in knowledge, overlooked perspectives, and areas needing further exploration.
-            Response: #{response}
-            Analysis: #{analysis}
-            ----------------------------------------
-            First, pinpoint missing data, weak arguments, or assumptions that need more evidence. Then, take a second pass—go beyond the surface. Think critically and creatively:
-            What unconventional angles or interdisciplinary insights might reveal deeper gaps?
-            Are there emerging trends, alternative theories, or speculative ideas that challenge the current understanding?
-            What questions remain unanswered, and how could they inspire new research directions?
-            Push the boundaries of conventional analysis to uncover gaps that others might miss."
+        prompt = format(DETECT_PROMPT_TEMPLATE, analysis: analysis, response: response)
         api_response = @api_client.query(prompt)
         parse_response(api_response)
       end
@@ -39,7 +44,7 @@ module ResearchAssistant
 
       def parse_response(response)
         gabs = json_api_client.query(response, GAPS_SCHEMA)
-        gabs..is_a?(Hash) ? gabs['knowledge_gaps'] : gabs
+        gabs.is_a?(Hash) ? gabs['knowledge_gaps'] : gabs
       rescue StandardError => e
         pp " Error in parsing knowledge gaps #{e.message}"
         return []

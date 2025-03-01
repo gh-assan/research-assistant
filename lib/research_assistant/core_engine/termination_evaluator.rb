@@ -11,6 +11,16 @@ module ResearchAssistant
         }
       PROMPT
 
+      SCORE_PROMPT_TEMPLATE = <<~PROMPT
+        Please evaluate the given text and assign a score from 0 to 100 based on how well it meets the user's objectives. Consider factors such as relevance, completeness, accuracy, and clarity.
+        {
+          rank: value,
+          reasons: A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement.
+        }
+        Here is the User Request: %<topic>s
+        text: %<text>s
+      PROMPT
+
       attr_reader :api_client, :json_api_client
 
       def initialize(api_client, json_api_client)
@@ -33,22 +43,15 @@ module ResearchAssistant
       end
 
       def score(topic, text)
-        prompt = " Please evaluate the given text and assign a score from 0 to 100 based on how well it meets the user's objectives. Consider factors such as relevance, completeness, accuracy, and clarity.
-                   {
-                    rank: value,
-                    reasons: A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement.
-                   }
-                  Here is the User Request: #{topic}
-                  text: #{text}
-                  "
+        prompt = format(SCORE_PROMPT_TEMPLATE, topic: topic, text: text)
         response = api_client.query(prompt)
         parse_response = parse_response(response)
 
         rank = parse_response['rank']
         reasons = parse_response['reasons']
-        pp  "score of the current iteration article is #{rank} and the reasons are #{reasons}"
+        pp "score of the current iteration article is #{rank} and the reasons are #{reasons}"
 
-        if  rank.nil?
+        if rank.nil?
           return 1
         end
         rank
@@ -59,7 +62,6 @@ module ResearchAssistant
       end
 
       def objectives_met?(knowledge)
-
         if knowledge.knowledge_gaps.nil? || knowledge.iteration < 2
           return false
         end

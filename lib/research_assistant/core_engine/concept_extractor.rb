@@ -14,6 +14,18 @@ module ResearchAssistant
         }
       PROMPT
 
+      EXTRACT_PROMPT_TEMPLATE = <<~PROMPT
+        Extract key concepts from the following
+        Topic: %<topic>s
+        text: %<text>s
+        -----------------------------------------
+        Then, take a second pass—go beyond the obvious. Identify deeper, underlying themes,
+        hidden connections, and abstract principles that might not be immediately apparent.
+        Consider alternative perspectives, interdisciplinary insights, and conceptual frameworks that could enrich the
+        understanding of this topic. Push the boundaries of interpretation and generate novel or speculative ideas that
+        could lead to new research directions.
+      PROMPT
+
       attr_reader :api_client, :json_api_client
 
       def initialize(api_client, json_api_client)
@@ -22,15 +34,7 @@ module ResearchAssistant
       end
 
       def extract(topic, text)
-        prompt = "Extract key concepts from the following
-                  Topic: #{topic}
-                  text: #{text}
-                  -----------------------------------------
-                  Then, take a second pass—go beyond the obvious. Identify deeper, underlying themes,
-                  hidden connections, and abstract principles that might not be immediately apparent.
-                  Consider alternative perspectives, interdisciplinary insights, and conceptual frameworks that could enrich the
-                  understanding of this topic. Push the boundaries of interpretation and generate novel or speculative ideas that
-                  could lead to new research directions."
+        prompt = format(EXTRACT_PROMPT_TEMPLATE, topic: topic, text: text)
         response = api_client.query(prompt)
         parse_response(response)
       end
@@ -39,7 +43,7 @@ module ResearchAssistant
 
       def parse_response(response)
         concepts = json_api_client.query(response, CONCEPTS_SCHEMA)
-        concepts..is_a?(Hash) ? concepts['concepts'] : concepts
+        concepts.is_a?(Hash) ? concepts['concepts'] : concepts
       rescue StandardError => e
         pp " Error in parsing concepts #{e.message}"
         return [] 
