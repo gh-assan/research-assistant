@@ -22,7 +22,15 @@ module ResearchAssistant
       end
 
       def detect(analysis, response)
-        prompt = "Identify knowledge gaps in the following analysis based on the response: #{response}\n\nAnalysis: #{analysis} then think again and generate deeper gaps."
+        prompt = "Analyze the following response and identify gaps in knowledge, overlooked perspectives, and areas needing further exploration.
+            Response: #{response}
+            Analysis: #{analysis}
+            ----------------------------------------
+            First, pinpoint missing data, weak arguments, or assumptions that need more evidence. Then, take a second pass—go beyond the surface. Think critically and creatively:
+            What unconventional angles or interdisciplinary insights might reveal deeper gaps?
+            Are there emerging trends, alternative theories, or speculative ideas that challenge the current understanding?
+            What questions remain unanswered, and how could they inspire new research directions?
+            Push the boundaries of conventional analysis to uncover gaps that others might miss."
         api_response = @api_client.query(prompt)
         parse_response(api_response)
       end

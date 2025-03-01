@@ -42,17 +42,20 @@ module ResearchAssistant
                   text: #{text}
                   "
         response = api_client.query(prompt)
-        s= parse_response(response)
-        pp  "score of the current iteration article is #{s}"
+        parse_response = parse_response(response)
 
-        if  s.nil?
+        rank = parse_response['rank']
+        reasons = parse_response['reasons']
+        pp  "score of the current iteration article is #{rank} and the reasons are #{reasons}"
+
+        if  rank.nil?
           return 1
         end
-        s
+        rank
       end
 
       def parse_response(response)
-        json_api_client.query(response, RANK_SCHEMA)['rank']
+        json_api_client.query(response, RANK_SCHEMA)
       end
 
       def objectives_met?(knowledge)

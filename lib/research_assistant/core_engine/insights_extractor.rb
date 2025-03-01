@@ -28,10 +28,16 @@ module ResearchAssistant
       private
 
       def extract_insights(topic, text)
-        prompt = "Analyze the following text and extract key insights then think again and generate deeper insights. The insights should be of the following types:
-                  Topic: #{topic}
-                  Text: #{text}
-                "
+        prompt = "Carefully analyze the following text and extract key insights across different dimensions.
+            Topic: #{topic}
+            Text: #{text}
+            ----------------------------------------
+            First, identify the most critical takeaways, patterns, and underlying themes. Then, take a second pass—go beyond the surface. Generate deeper insights by:
+            Identifying hidden connections: What underlying principles, implicit assumptions, or indirect influences are at play?
+            Challenging conventional interpretations: How might this text be understood differently through alternative lenses or disciplines?
+            Considering future implications: What long-term consequences, speculative ideas, or unanswered questions emerge from this analysis?
+            Exploring paradoxes or tensions: Are there contradictions, gaps, or areas where conventional wisdom may be flawed?
+          Push the boundaries of interpretation to reveal insights that are not immediately obvious, enriching the depth and originality of the analysis."
         response = api_client.query(prompt)
         parse_response(response)
       end

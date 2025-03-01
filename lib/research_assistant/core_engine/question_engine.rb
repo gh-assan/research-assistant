@@ -26,13 +26,23 @@ module ResearchAssistant
       end
 
       def extract(text)
-        prompt = "Please analyze the given text and generate questions to challenge the text then think again and generate deeper questions . The questions should be of the following types:
-              Foundational Questions: Questions that address the basic principles and key concepts from the text.
-              Critical Questions: Questions that examine the strength, weaknesses, or implications of the ideas presented.
-              Counterfactual Questions: Questions that explore alternate scenarios or what could have been different if certain conditions changed.
-              Synthesis Questions: Questions that seek to integrate and combine multiple ideas from the text to create new insights or solutions.
-              it can have multiple questions of each type.:
-             #{text}"
+        prompt = "Carefully analyze the given
+        text : #{text}
+        -----------------------------------------
+        Then,
+        generate a set of thought-provoking questions to challenge its ideas. Your questions should be of the following types:
+
+        Foundational Questions – Address the basic principles, assumptions, and key concepts presented in the text.
+        Critical Questions – Examine the strengths, weaknesses, biases, and implications of the arguments.
+        Counterfactual Questions – Explore alternate scenarios or how different conditions might have changed the conclusions.
+        Synthesis Questions – Integrate multiple ideas from the text to generate new insights, theories, or solutions.
+        First, generate a diverse set of questions across these categories. Then, take a second pass—go beyond the obvious. Push the boundaries by:
+
+        Deepening foundational questions to explore hidden assumptions and conceptual blind spots.
+        Strengthening critical questions to challenge the text from multiple angles, including ethical, philosophical, and interdisciplinary perspectives.
+        Expanding counterfactual questions to consider extreme, improbable, or futuristic scenarios.
+        Elevating synthesis questions by combining ideas in unexpected ways to generate innovative research directions.
+        Generate multiple questions for each category, ensuring they provoke deeper thought and encourage critical engagement with the text."
         response = api_client.query(prompt)
         parse_response(response)
       end
