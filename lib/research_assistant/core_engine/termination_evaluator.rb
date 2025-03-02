@@ -1,13 +1,30 @@
-require_relative 'models/response_schema_prompt'
-
 module ResearchAssistant
   module CoreEngine
     class TerminationEvaluator
 
-      attr_reader :api_client, :json_api_client
+      RANK_SCHEMA = <<~PROMPT
+        Please analyze the text and assign a rank coming from the text . 
+        Provide the response in the following format:
+        {
+          "rank": value, 
+          "reasons": "A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement."
+        }
+      PROMPT
 
-      def initialize(api_client, json_api_client)
-        @api_client = api_client
+      SCORE_PROMPT_TEMPLATE = <<~PROMPT
+        Please evaluate the given text and assign a score from 0 to 100 based on how well it meets the user's objectives. Consider factors such as relevance, completeness, accuracy, and clarity.
+        {
+          rank: value,
+          reasons: A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement.
+        }
+        Here is the User Request: %<topic>s
+        text: %<text>s
+      PROMPT
+
+      attr_reader :reasoning_api_client, :json_api_client
+
+      def initialize(reasoning_api_client, json_api_client)
+        @reasoning_api_client = reasoning_api_client
         @json_api_client = json_api_client
       end
 
@@ -26,30 +43,25 @@ module ResearchAssistant
       end
 
       def score(topic, text)
-        prompt = " Please evaluate the given text and assign a score from 0 to 100 based on how well it meets the user's objectives. Consider factors such as relevance, completeness, accuracy, and clarity.
-                   {
-                    rank: value,
-                    reasons: A concise explanation of why the given score was assigned, highlighting strengths and areas for improvement.
-                   }
-                  Here is the User Request: #{topic}
-                  text: #{text}
-                  "
-        response = api_client.query(prompt)
-        s= parse_response(response)
-        pp  "score of the current iteration article is #{s}"
+        prompt = format(SCORE_PROMPT_TEMPLATE, topic: topic, text: text)
+        response = reasoning_api_client.query(prompt)
+        parse_response = parse_response(response)
 
-        if  s.nil?
+        rank = parse_response['rank']
+        reasons = parse_response['reasons']
+        pp "score of the current iteration article is #{rank} and the reasons are #{reasons}"
+
+        if rank.nil?
           return 1
         end
-        s
+        rank
       end
 
       def parse_response(response)
-        json_api_client.query(response, Models::RANK_SCHEMA)['rank']
+        json_api_client.query(response, RANK_SCHEMA)
       end
 
       def objectives_met?(knowledge)
-
         if knowledge.knowledge_gaps.nil? || knowledge.iteration < 2
           return false
         end

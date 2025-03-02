@@ -10,6 +10,7 @@ gem 'pry'                   # Debugging
 gem 'rake'                  # Task management
 gem 'json'                  # JSON parsing
 gem 'fileutils'             # File management
+gem 'dotenv'                # Environment variable management
 
 gemspec
 
