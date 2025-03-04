@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+
+def main
+  topic = ARGV[0] || "sky is blue"
+
+  # Initialize components
+  reasoning_api_client = ResearchAssistant::OllamaInterface::ReasoningClient.new
+
+  pp "Run brainstorming on topic: #{topic}"
+  output = ResearchAssistant::BrainstormingEngine::MultiPersonals.new(reasoning_api_client).run(topic)
+
+  pp output
+  pp "job done"
+end
+
+main if __FILE__ == $0
