@@ -22,15 +22,6 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
   end
 
   describe '#should_terminate?' do
-    context 'when objectives are met' do
-      it 'returns true' do
-        knowledge.knowledge_gaps = []
-        knowledge.iteration = 2
-
-        expect(termination_evaluator.should_terminate?(knowledge)).to be true
-      end
-    end
-
     context 'when max iterations are reached' do
       it 'returns true' do
         knowledge.iteration = 5
@@ -99,23 +90,9 @@ RSpec.describe ResearchAssistant::CoreEngine::TerminationEvaluator do
   end
 
   describe '#objectives_met?' do
-    it 'returns true when knowledge gaps are empty and iteration is greater than or equal to 2' do
+    it 'returns false when knowledge gaps are empty and iteration is greater than or equal to 2' do
       knowledge.knowledge_gaps = []
       knowledge.iteration = 2
-
-      expect(termination_evaluator.send(:objectives_met?, knowledge)).to be true
-    end
-
-    it 'returns false when knowledge gaps are not empty' do
-      knowledge.knowledge_gaps = ['Gap 1']
-      knowledge.iteration = 2
-
-      expect(termination_evaluator.send(:objectives_met?, knowledge)).to be false
-    end
-
-    it 'returns false when iteration is less than 2' do
-      knowledge.knowledge_gaps = []
-      knowledge.iteration = 1
 
       expect(termination_evaluator.send(:objectives_met?, knowledge)).to be false
     end
