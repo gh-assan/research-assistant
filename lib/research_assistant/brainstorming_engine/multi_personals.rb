@@ -1,6 +1,6 @@
 module ResearchAssistant
   module BrainstormingEngine
-    class MultiPersonals
+    class MultiPersonals < BaseBrainstorming
 
       PROMPT = <<~PROMPT
         Simulate a high-stakes brainstorming competition featuring five intellectually competitive AI agents. Their objective: 
@@ -14,18 +14,6 @@ module ResearchAssistant
         Continue the discussion through multiple iterations (at least 5), ensuring agents push the limits of their reasoning until no further novel ideas can be generated.
         Present the session as an engaging, structured dialogue, capturing the energy of competitive intellectual exploration.
       PROMPT
-
-      
-      attr_reader :reasoning_api_client
-
-      def initialize(reasoning_api_client)
-        @reasoning_api_client = reasoning_api_client
-      end
-
-      def run(topic)
-        prompt = format(PROMPT, topic: topic)
-        reasoning_api_client.query(prompt)
-      end     
     end
   end
 end

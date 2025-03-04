@@ -12,7 +12,7 @@ def main
   reasoning_api_client = ResearchAssistant::OllamaInterface::ReasoningClient.new
 
   pp "Run brainstorming on topic: #{topic}"
-  output = ResearchAssistant::BrainstormingEngine::MultiPersonals.new(reasoning_api_client).run(topic)
+  output = ResearchAssistant::BrainstormingEngine::FutureVision.new(reasoning_api_client).run(topic)
 
   pp output
   pp "job done"
