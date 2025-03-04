@@ -29,7 +29,7 @@ module ResearchAssistant
       end
 
       def should_terminate?(knowledge)
-        objectives_met?(knowledge) || min_score_met?(knowledge) || max_iterations_reached?(knowledge)
+        max_iterations_reached?(knowledge) || min_score_met?(knowledge)
       end
 
       private
@@ -62,11 +62,7 @@ module ResearchAssistant
       end
 
       def objectives_met?(knowledge)
-        if knowledge.knowledge_gaps.nil? || knowledge.iteration < 2
-          return false
-        end
-
-        knowledge.knowledge_gaps.empty?
+        return false
       end
     end
   end
