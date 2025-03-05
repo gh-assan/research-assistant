@@ -26,6 +26,8 @@ module ResearchAssistant
         Challenge yourself with questions like: What new perspectives or uses can be derived?
         Look for areas where combining ideas might open up novel opportunities.
         Use this structured approach to uncover fresh insights and create a dynamic, interconnected mind map for %<topic>s .
+        ---
+        please take into account the summary of the last round of brainstorming: %<last_round_summary>s
       PROMPT
     end
   end

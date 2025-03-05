@@ -21,6 +21,8 @@ module ResearchAssistant
 
         Discuss which transformed ideas hold potential for further exploration or real-world application.
         Reflect on how thinking in extremes has revealed new possibilities around %<topic>s .
+        ---
+        please take into account the summary of the last round of brainstorming: %<last_round_summary>s
       PROMPT
     end
   end

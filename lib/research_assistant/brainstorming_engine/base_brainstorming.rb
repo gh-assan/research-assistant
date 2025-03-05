@@ -7,8 +7,8 @@ module ResearchAssistant
         @reasoning_api_client = reasoning_api_client
       end
 
-      def run(topic)
-        prompt = format(self.class::PROMPT, topic: topic)
+      def run(topic, last_round_summary = '')
+        prompt = format(self.class::PROMPT, topic: topic, last_round_summary: last_round_summary)
         reasoning_api_client.query(prompt)
       end
     end

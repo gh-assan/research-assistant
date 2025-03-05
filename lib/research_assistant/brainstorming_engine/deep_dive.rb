@@ -20,6 +20,8 @@ module ResearchAssistant
 
         Reflect on the full chain of reasoning to identify innovative ideas or new perspectives that can be applied to %<topic>s .
         Use this methodical approach to reveal the deeper significance of %<topic>s  and inspire creative ideas from your exploration.
+        ---
+        please take into account the summary of the last round of brainstorming: %<last_round_summary>s
       PROMPT
     end
   end

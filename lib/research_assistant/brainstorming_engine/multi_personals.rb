@@ -13,6 +13,8 @@ module ResearchAssistant
         The session should unfold dynamically, mirroring a real brainstorming debate, where ideas spark counterarguments, clarifications, and new lines of thought. 
         Continue the discussion through multiple iterations (at least 5), ensuring agents push the limits of their reasoning until no further novel ideas can be generated.
         Present the session as an engaging, structured dialogue, capturing the energy of competitive intellectual exploration.
+        ---
+        please take into account the summary of the last round of brainstorming: %<last_round_summary>s
       PROMPT
     end
   end

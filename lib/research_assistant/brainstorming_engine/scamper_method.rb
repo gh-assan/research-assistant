@@ -13,6 +13,8 @@ module ResearchAssistant
         Eliminate: What elements could be removed or simplified to streamline the process?
         Reverse: Can reordering, inverting, or rethinking aspects of %<topic>s  lead to creative breakthroughs?
         Use these questions to spark fresh perspectives and generate diverse, actionable ideas for innovation around %<topic>s .
+        ---         
+        please take into account the summary of the last round of brainstorming: %<last_round_summary>s
       PROMPT
     end
   end

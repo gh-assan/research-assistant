@@ -22,6 +22,8 @@ module ResearchAssistant
         Outline a timeline of events, innovations, or policy changes that would cumulatively drive the transformation.
         Reflect on how each step interconnects to build towards the envisioned 2050 scenario.
         Use this detailed framework to explore a compelling and realistic future scenario for %<topic>s  while uncovering the journey required to achieve such groundbreaking changes.
+        ---
+        please take into account the summary of the last round of brainstorming: %<last_round_summary>s
       PROMPT
     end
   end
