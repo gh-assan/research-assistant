@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+require 'securerandom'
+
+def main
+  topic = ARGV[0] || "sky is blue"
+  research_id = SecureRandom.uuid
+
+  # Initialize components
+  reasoning_api_client = ResearchAssistant::OllamaInterface::ReasoningClient.new
+  writer_api_client = ResearchAssistant::OllamaInterface::WriterApiClient.new
+
+  multi_personals = ResearchAssistant::BrainstormingEngine::MultiPersonals.new(reasoning_api_client)
+  deep_dive = ResearchAssistant::BrainstormingEngine::DeepDive.new(reasoning_api_client)
+  reverse_brainstorming = ResearchAssistant::BrainstormingEngine::ReverseBrainstorming.new(reasoning_api_client)
+  future_vision = ResearchAssistant::BrainstormingEngine::FutureVision.new(reasoning_api_client)
+  mind_mapping = ResearchAssistant::BrainstormingEngine::MindMapping.new(reasoning_api_client)
+  scamper_method = ResearchAssistant::BrainstormingEngine::ScamperMethod.new(reasoning_api_client)
+
+  brainstorming_integrator = ResearchAssistant::BrainstormingEngine::BrainstormingIntegrator.new(
+    multi_personals: multi_personals,
+    deep_dive: deep_dive,
+    reverse_brainstorming: reverse_brainstorming,
+    future_vision: future_vision,
+    mind_mapping: mind_mapping,
+    scamper_method: scamper_method
+  )
+
+  termination_evaluator = ResearchAssistant::BrainstormingEngine::TerminationEvaluator.new
+  brainstorming_file_manager = ResearchAssistant::KnowledgeBase::BrainstormingFileManager.new(research_id)
+  summary_generator = ResearchAssistant::Output::SummaryGenerator.new(writer_api_client)
+
+  iteration_manager = ResearchAssistant::BrainstormingEngine::IterationManager.new(
+    brainstorming_integrator,
+    brainstorming_file_manager,
+    summary_generator,
+    termination_evaluator,
+    research_id
+  )
+
+  pp "Run brainstorming on topic: #{topic}"
+
+  iteration_manager.run(topic, "Understand the topic")
+
+  pp "job done"
+end
+
+main if __FILE__ == $0
