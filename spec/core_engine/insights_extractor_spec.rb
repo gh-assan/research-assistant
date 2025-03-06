@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
-  let(:reasoning_api_client) { instance_double(ResearchAssistant::OllamaInterface::ReasoningClient) }
+  let(:brainstorming_api_client) { instance_double(ResearchAssistant::OllamaInterface::ReasoningClient) }
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
-  let(:analyzer) { described_class.new(reasoning_api_client, json_api_client) }
+  let(:analyzer) { described_class.new(brainstorming_api_client, json_api_client) }
   let(:text) { 'The sky is blue and the sun is bright.' }
   let(:topic) { 'sample topic.' }
   let(:response_body) {
@@ -20,7 +20,7 @@ RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
   describe '#analyze' do
     context 'when the API request is successful' do
       it 'returns the analysis with extracted insights' do
-        allow(reasoning_api_client).to receive(:query).and_return(response_body.to_json)
+        allow(brainstorming_api_client).to receive(:query).and_return(response_body.to_json)
         allow(json_api_client).to receive(:query).with(response_body.to_json, ResearchAssistant::CoreEngine::InsightsExtractor::INSIGHTS_SCHEMA).and_return(response_body)
 
         result = analyzer.analyze(topic, text)
@@ -32,7 +32,7 @@ RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
 
     context 'when the API request fails' do
       it 'raises an API error' do
-        allow(reasoning_api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
+        allow(brainstorming_api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
 
         expect { analyzer.analyze(topic, text) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
       end
@@ -40,7 +40,7 @@ RSpec.describe ResearchAssistant::CoreEngine::InsightsExtractor do
 
     context 'when there is a connection error' do
       it 'raises a connection error' do
-        allow(reasoning_api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
+        allow(brainstorming_api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
 
         expect { analyzer.analyze(topic, text) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
       end

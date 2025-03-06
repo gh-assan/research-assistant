@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::IterationManager do
-  let(:reasoning_api_client) { instance_double(ResearchAssistant::OllamaInterface::ReasoningClient) }
+  let(:brainstorming_api_client) { instance_double(ResearchAssistant::OllamaInterface::ReasoningClient) }
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
   let(:writer_api_client) { instance_double(ResearchAssistant::OllamaInterface::WriterApiClient) }
   let(:file_manager) { instance_double(ResearchAssistant::KnowledgeBase::FileManager) }
@@ -27,7 +27,7 @@ RSpec.describe ResearchAssistant::CoreEngine::IterationManager do
   end
 
   let(:iteration_manager) do
-    described_class.new(reasoning_api_client, json_api_client, writer_api_client, research_id).tap do |manager|
+    described_class.new(brainstorming_api_client, json_api_client, writer_api_client, research_id).tap do |manager|
       manager.file_manager = file_manager
       manager.termination_evaluator = termination_evaluator
       manager.output_generator = output_generator
