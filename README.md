@@ -43,6 +43,11 @@
     ```sh
     ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
     ```
+6. Set up brainstorming  model:
+    ```sh
+    ollama create research-assistant-brainstorming-model -f models/BrainstormingModelfile
+    ```
+
 
 ## Usage
 

@@ -11,15 +11,15 @@ def main
   research_id = SecureRandom.uuid
 
   # Initialize components
-  reasoning_api_client = ResearchAssistant::OllamaInterface::ReasoningClient.new
+  brainstorming_client = ResearchAssistant::OllamaInterface::BrainstormingClient.new
   writer_api_client = ResearchAssistant::OllamaInterface::WriterApiClient.new
 
-  multi_personals = ResearchAssistant::BrainstormingEngine::MultiPersonals.new(reasoning_api_client)
-  deep_dive = ResearchAssistant::BrainstormingEngine::DeepDive.new(reasoning_api_client)
-  reverse_brainstorming = ResearchAssistant::BrainstormingEngine::ReverseBrainstorming.new(reasoning_api_client)
-  future_vision = ResearchAssistant::BrainstormingEngine::FutureVision.new(reasoning_api_client)
-  mind_mapping = ResearchAssistant::BrainstormingEngine::MindMapping.new(reasoning_api_client)
-  scamper_method = ResearchAssistant::BrainstormingEngine::ScamperMethod.new(reasoning_api_client)
+  multi_personals = ResearchAssistant::BrainstormingEngine::MultiPersonals.new(brainstorming_client)
+  deep_dive = ResearchAssistant::BrainstormingEngine::DeepDive.new(brainstorming_client)
+  reverse_brainstorming = ResearchAssistant::BrainstormingEngine::ReverseBrainstorming.new(brainstorming_client)
+  future_vision = ResearchAssistant::BrainstormingEngine::FutureVision.new(brainstorming_client)
+  mind_mapping = ResearchAssistant::BrainstormingEngine::MindMapping.new(brainstorming_client)
+  scamper_method = ResearchAssistant::BrainstormingEngine::ScamperMethod.new(brainstorming_client)
 
   brainstorming_integrator = ResearchAssistant::BrainstormingEngine::BrainstormingIntegrator.new(
     multi_personals: multi_personals,
