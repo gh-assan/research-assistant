@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+require 'securerandom'
+
+def main
+  # topic = ARGV[0] || "sky is blue"
+  # research_id = SecureRandom.uuid
+
+  article_name = '../research/Zimbardos Stanford Prison Experiment/iterations/3/article.md'
+  # Load the article content from the file
+  article_path = File.expand_path(article_name, __dir__)
+  article = File.read(article_path)
+
+
+  # Initialize components
+  review_client = ResearchAssistant::OllamaInterface::ReviewClient.new
+  
+  reviewer = ResearchAssistant::ReviewEngine::Reviewer.new(review_client)
+
+  
+
+  review = reviewer.review(article)
+
+  pp "Run review on topic: #{article_name}"
+
+  pp review
+
+  pp "job done"
+end
+
+main if __FILE__ == $0

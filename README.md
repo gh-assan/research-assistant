@@ -47,6 +47,11 @@
     ```sh
     ollama create research-assistant-brainstorming-model -f models/BrainstormingModelfile
     ```
+7. Set up reviewer  model:
+    ```sh
+    ollama create research-assistant-reviewer-model -f models/ReviewerModelfile
+    ```
+
 
 
 ## Usage
