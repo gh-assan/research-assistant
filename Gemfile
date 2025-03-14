@@ -8,7 +8,7 @@ gem 'zeitwerk'              # Auto-loader
 gem 'async'                 # Concurrency
 gem 'pry'                   # Debugging
 gem 'rake'                  # Task management
-gem 'json'                  # JSON parsing
+gem "json", ">= 2.10.2"     # JSON parsing
 gem 'fileutils'             # File management
 gem 'dotenv'                # Environment variable management
 
