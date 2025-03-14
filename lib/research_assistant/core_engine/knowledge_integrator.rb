@@ -15,11 +15,11 @@ module ResearchAssistant
         pp "KnowledgeIntegrator start integrating knowledge for iteration #{iteration_number}"
 
         input_article = last_round_article || user_intent
-        insights = insights_extractor.analyze(topic, input_article)
+        insights = insights_extractor.extract(topic, input_article)
         concepts = concept_extractor.extract(topic, input_article)
-        gaps = gap_detector.detect(insights, input_article)
-        questions = questions_engine.extract(input_article)
-        relations = relations_finder.find_relations(topic, input_article, insights)
+        gaps = gap_detector.extract(topic, input_article)
+        questions = questions_engine.extract(topic, input_article)
+        relations = relations_finder.extract(topic, input_article)
 
         knowledge = ResearchAssistant::KnowledgeBase::Knowledge.new
         knowledge.insights = insights

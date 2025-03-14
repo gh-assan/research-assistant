@@ -13,20 +13,20 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
   let(:last_round_article) { 'This is the last round article.' }
   let(:user_intent) { 'Write a detailed article about climate change.' }
   let(:iteration_number) { 1 }
-  let(:insights) { ['Insight 1', 'Insight 2'] }
-  let(:concepts) { ['Concept 1', 'Concept 2'] }
-  let(:gaps) { ['Gap 1', 'Gap 2'] }
-  let(:questions) { ['Question 1', 'Question 2'] }
-  let(:relations) { ['Relation 1', 'Relation 2'] }
+  let(:insights) { ['Insight 1', 'Insight 2'].to_s }
+  let(:concepts) { ['Concept 1', 'Concept 2'].to_s }
+  let(:gaps) { ['Gap 1', 'Gap 2'].to_s }
+  let(:questions) { ['Question 1', 'Question 2'].to_s }
+  let(:relations) { ['Relation 1', 'Relation 2'].to_s }
 
   describe '#integrate' do
     context 'when all API requests are successful' do
       it 'returns the integrated knowledge' do
-        allow(insights_extractor).to receive(:analyze).with(topic, last_round_article).and_return(insights)
+        allow(insights_extractor).to receive(:extract).with(topic, last_round_article).and_return(insights)
         allow(concept_extractor).to receive(:extract).with(topic, last_round_article).and_return(concepts)
-        allow(gap_detector).to receive(:detect).with(insights, last_round_article).and_return(gaps)
-        allow(questions_engine).to receive(:extract).with(last_round_article).and_return(questions)
-        allow(relations_finder).to receive(:find_relations).with(topic, last_round_article, insights).and_return(relations)
+        allow(gap_detector).to receive(:extract).with(topic, last_round_article).and_return(gaps)
+        allow(questions_engine).to receive(:extract).with(topic, last_round_article).and_return(questions)
+        allow(relations_finder).to receive(:extract).with(topic, last_round_article).and_return(relations)
 
         knowledge = integrator.integrate(topic, last_round_article, user_intent, iteration_number)
 
@@ -44,7 +44,7 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
 
     context 'when the insights extraction fails' do
       it 'raises an error' do
-        allow(insights_extractor).to receive(:analyze).and_raise(RuntimeError, 'Insights extraction failed')
+        allow(insights_extractor).to receive(:extract).and_raise(RuntimeError, 'Insights extraction failed')
 
         expect { integrator.integrate(topic, last_round_article, user_intent, iteration_number) }.to raise_error(RuntimeError, 'Insights extraction failed')
       end
@@ -52,7 +52,7 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
 
     context 'when the concept extraction fails' do
       it 'raises an error' do
-        allow(insights_extractor).to receive(:analyze).with(topic, last_round_article).and_return(insights)
+        allow(insights_extractor).to receive(:extract).with(topic, last_round_article).and_return(insights)
         allow(concept_extractor).to receive(:extract).and_raise(RuntimeError, 'Concept extraction failed')
 
         expect { integrator.integrate(topic, last_round_article, user_intent, iteration_number) }.to raise_error(RuntimeError, 'Concept extraction failed')
@@ -61,9 +61,9 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
 
     context 'when the gap detection fails' do
       it 'raises an error' do
-        allow(insights_extractor).to receive(:analyze).with(topic, last_round_article).and_return(insights)
+        allow(insights_extractor).to receive(:extract).with(topic, last_round_article).and_return(insights)
         allow(concept_extractor).to receive(:extract).with(topic, last_round_article).and_return(concepts)
-        allow(gap_detector).to receive(:detect).and_raise(RuntimeError, 'Gap detection failed')
+        allow(gap_detector).to receive(:extract).and_raise(RuntimeError, 'Gap detection failed')
 
         expect { integrator.integrate(topic, last_round_article, user_intent, iteration_number) }.to raise_error(RuntimeError, 'Gap detection failed')
       end
@@ -71,9 +71,9 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
 
     context 'when the questions extraction fails' do
       it 'raises an error' do
-        allow(insights_extractor).to receive(:analyze).with(topic, last_round_article).and_return(insights)
+        allow(insights_extractor).to receive(:extract).with(topic, last_round_article).and_return(insights)
         allow(concept_extractor).to receive(:extract).with(topic, last_round_article).and_return(concepts)
-        allow(gap_detector).to receive(:detect).with(insights, last_round_article).and_return(gaps)
+        allow(gap_detector).to receive(:extract).with(topic, last_round_article).and_return(gaps)
         allow(questions_engine).to receive(:extract).and_raise(RuntimeError, 'Questions extraction failed')
 
         expect { integrator.integrate(topic, last_round_article, user_intent, iteration_number) }.to raise_error(RuntimeError, 'Questions extraction failed')
@@ -82,11 +82,11 @@ RSpec.describe ResearchAssistant::CoreEngine::KnowledgeIntegrator do
 
     context 'when the relations finding fails' do
       it 'raises an error' do
-        allow(insights_extractor).to receive(:analyze).with(topic, last_round_article).and_return(insights)
+        allow(insights_extractor).to receive(:extract).with(topic, last_round_article).and_return(insights)
         allow(concept_extractor).to receive(:extract).with(topic, last_round_article).and_return(concepts)
-        allow(gap_detector).to receive(:detect).with(insights, last_round_article).and_return(gaps)
-        allow(questions_engine).to receive(:extract).with(last_round_article).and_return(questions)
-        allow(relations_finder).to receive(:find_relations).and_raise(RuntimeError, 'Relations finding failed')
+        allow(gap_detector).to receive(:extract).with(topic, last_round_article).and_return(gaps)
+        allow(questions_engine).to receive(:extract).with(topic, last_round_article).and_return(questions)
+        allow(relations_finder).to receive(:extract).and_raise(RuntimeError, 'Relations finding failed')
 
         expect { integrator.integrate(topic, last_round_article, user_intent, iteration_number) }.to raise_error(RuntimeError, 'Relations finding failed')
       end

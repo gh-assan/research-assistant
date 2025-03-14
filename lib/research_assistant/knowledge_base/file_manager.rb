@@ -11,17 +11,14 @@ module ResearchAssistant
         iteration_dir = File.join(@base_path, "iterations/#{knowledge.iteration}")
         FileUtils.mkdir_p(iteration_dir)
 
-        # Save article to .md file
-        article = knowledge.article
-        
-        File.write(File.join(iteration_dir, "article.md"), article)
+        File.write(File.join(iteration_dir, "article.md"), knowledge.article)
 
         # Save remaining data to .json file
-        File.write(File.join(iteration_dir, 'questions.json'), JSON.pretty_generate(knowledge.questions))
-        File.write(File.join(iteration_dir, 'concepts.json'), JSON.pretty_generate(knowledge.concepts))
-        File.write(File.join(iteration_dir, 'insights.json'), JSON.pretty_generate(knowledge.insights))
-        File.write(File.join(iteration_dir, 'knowledge_gaps.json'), JSON.pretty_generate(knowledge.knowledge_gaps))
-        File.write(File.join(iteration_dir, 'relations.json'), JSON.pretty_generate(knowledge.relations))
+        File.write(File.join(iteration_dir, 'questions.md'), knowledge.questions)
+        File.write(File.join(iteration_dir, 'concepts.md'), knowledge.concepts)
+        File.write(File.join(iteration_dir, 'insights.md'), knowledge.insights)
+        File.write(File.join(iteration_dir, 'knowledge_gaps.md'), knowledge.knowledge_gaps)
+        File.write(File.join(iteration_dir, 'relations.md'), knowledge.relations)
 
         pp "Iteration data saved to #{iteration_dir}"
       end

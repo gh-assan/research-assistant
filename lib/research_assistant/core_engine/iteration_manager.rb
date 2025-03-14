@@ -16,11 +16,11 @@ module ResearchAssistant
         @termination_evaluator ||= TerminationEvaluator.new(reasoning_api_client, json_api_client)
         @output_generator ||= ResearchAssistant::Output::OutputGenerator.new(writer_api_client)
         @knowledge_integrator ||= KnowledgeIntegrator.new(
-          insights_extractor: InsightsExtractor.new(reasoning_api_client, json_api_client),
-          concept_extractor: ConceptExtractor.new(reasoning_api_client, json_api_client),
-          gap_detector: GapDetector.new(reasoning_api_client, json_api_client),
-          questions_engine: QuestionEngine.new(reasoning_api_client, json_api_client),
-          relations_finder: RelationsFinder.new(reasoning_api_client, json_api_client)
+          insights_extractor: InsightsExtractor.new,
+          concept_extractor: ConceptExtractor.new,
+          gap_detector: GapDetector.new,
+          questions_engine: QuestionEngine.new,
+          relations_finder: RelationsFinder.new
         )
       end
 
