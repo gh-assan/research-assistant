@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+require 'securerandom'
+
+def main
+  # topic = ARGV[0] || "sky is blue"
+  research_id = SecureRandom.uuid
+
+  article_name = '../research/Zimbardos Stanford Prison Experiment/iterations/3/article.md'
+  # Load the article content from the file
+  article_path = File.expand_path(article_name, __dir__)
+  article = File.read(article_path)
+
+
+  # Initialize components
+  review_client = ResearchAssistant::OllamaInterface::ReviewClient.new
+  refiner_client = ResearchAssistant::OllamaInterface::RefinerClient.new
+  
+  reviewer = ResearchAssistant::ReviewEngine::Reviewer.new(review_client)
+  refiner = ResearchAssistant::ReviewEngine::Refiner.new(refiner_client)
+  refiner_file_manager = ResearchAssistant::KnowledgeBase::RefinerFileManager.new(research_id)
+
+  pp "Run review on article: #{article_name}"
+  review = reviewer.review(article)
+
+  pp "Run refine on article: #{article_name}"
+
+  refined_article = refiner.refine_article(article, review)
+
+  pp "Save refined article: #{article_name}"
+  refiner_file_manager.save_iteration(refined_article, review, research_id)
+
+  pp "job done"
+end
+
+main if __FILE__ == $0
