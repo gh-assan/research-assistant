@@ -20,31 +20,23 @@ module ResearchAssistant
           On the Topic: #{knowledge.topic}
 
           Check the extracted Insights:
-          #{format_section(knowledge.insights, 'insight', 'classification', 'significance')}
+          #{knowledge.insights}
 
           Define the following Concepts and their relevance:
-          #{format_section(knowledge.concepts, 'concept', 'relevance')}
+          #{knowledge.concepts}
 
           Make sure to fill Knowledge Gaps with the following details:
-          #{format_section(knowledge.knowledge_gaps, 'insight', 'classification', 'significance')}
+          #{knowledge.knowledge_gaps}
 
           You should answer the Questions with the following details:
-          #{format_section(knowledge.questions, 'question', 'type', 'explanation')}
+          #{knowledge.questions}
 
           Use the discovered Relationships to direct your analysis:
-          #{format_section(knowledge.relations, 'insight', 'classification', 'significance')}
+          #{knowledge.relations}
 
           Check your last round Responses and build on top of it:
           #{knowledge.last_round_article}
         PROMPT
-      end
-
-      def format_section(items, *keys)
-        return "None" if items.nil? || items.empty?
-
-        items.map do |item|
-          keys.map { |key| "#{key.capitalize}: #{item[key]}" }.join(", ")
-        end.join("\n")
       end
 
       def write_article(prompt)

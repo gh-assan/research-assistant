@@ -13,11 +13,11 @@ RSpec.describe ResearchAssistant::CoreEngine::IterationManager do
   let(:research_id) { 'sample_research_id' }
   let(:knowledge) do
     ResearchAssistant::KnowledgeBase::Knowledge.new(
-      insights: [],
-      concepts: [],
-      relations: [],
-      knowledge_gaps: [],
-      questions: [],
+      insights: '',
+      concepts: '',
+      relations: '',
+      knowledge_gaps: '',
+      questions: '',
       article: 'Initial article content.',
       last_round_article: 'Last round article content.',
       user_intent: 'To understand the topic.',

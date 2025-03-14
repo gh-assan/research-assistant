@@ -3,11 +3,11 @@ module ResearchAssistant
     class Knowledge
       include SmartProperties
 
-      property :insights, accepts: Array, default: -> { [] }
-      property :concepts, accepts: Array, default: -> { [] }
-      property :relations, accepts: Array, default: -> { [] }
-      property :knowledge_gaps, accepts: Array, default: -> { [] }
-      property :questions, accepts: Array, default: -> { [] }
+      property :insights, accepts:String
+      property :concepts, accepts: String
+      property :relations, accepts: String
+      property :knowledge_gaps, accepts: String
+      property :questions, accepts: String
       property :article, accepts: String
       property :last_round_article, accepts: String
       property :user_intent, accepts: String, default: ""

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Creating model files..."
+
+ollama create research-assistant-concept-extractor-model -f models/ConceptExtractionModelfile
+ollama create research-assistant-gaps-extractor-model -f models/GapsExtractionModelfile
+ollama create research-assistant-insights-extractor-model -f models/InsightsExtractionModelfile
+ollama create research-assistant-question-engine-model -f models/QuestionGenerationModelfile
+ollama create research-assistant-relation-finder-model -f models/RelationsExtractionModelfile
+
+ollama create research-assistant-writer-model -f models/WriterModelfile
+ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
+ollama create research-assistant-brainstorming-model -f models/BrainstormingModelfile
+ollama create research-assistant-reviewer-model -f models/ReviewerModelfile
+ollama create research-assistant-refiner-model -f models/RefinerModelfile
+
+echo "Model files creation completed."

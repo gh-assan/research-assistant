@@ -39,7 +39,7 @@ module ResearchAssistant
       end
 
       def min_score_met?(knowledge)
-        score(knowledge.user_intent, knowledge.article) >= 90 && knowledge.iteration > 1
+        score(knowledge.user_intent, knowledge.article) >= 95 && knowledge.iteration > 1
       end
 
       def score(topic, text)

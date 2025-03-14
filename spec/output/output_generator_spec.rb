@@ -9,19 +9,19 @@ RSpec.describe ResearchAssistant::Output::OutputGenerator do
     ResearchAssistant::KnowledgeBase::Knowledge.new(
       insights: [
         { 'insight' => 'The sky is blue.', 'classification' => 'foundational', 'significance' => 'It describes the color of the sky.' }
-      ],
+      ].to_s,
       concepts: [
         { 'concept' => 'sky', 'relevance' => 'foundational' }
-      ],
+      ].to_s,
       knowledge_gaps: [
         { 'insight' => 'Missing foundational concept.', 'classification' => 'foundational', 'significance' => 'It is crucial for the analysis.' }
-      ],
+      ].to_s,
       questions: [
         { 'question' => 'What is the color of the sky?', 'type' => 'foundational', 'explanation' => 'It addresses the basic principle of the text.' }
-      ],
+      ].to_s,
       relations: [
         { 'insight' => 'The sky is blue.', 'classification' => 'associative', 'significance' => 'It describes the color of the sky.' }
-      ],
+      ].to_s,
       article: 'This is the article content.',
       last_round_article: 'This is the last round article content.',
       user_intent: 'To understand the color of the sky.',

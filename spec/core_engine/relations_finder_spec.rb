@@ -3,12 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
-  let(:brainstorming_api_client) { instance_double(ResearchAssistant::OllamaInterface::ReasoningClient) }
+  let(:api_client) { instance_double(ResearchAssistant::OllamaInterface::ApiClient) }
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
-  let(:finder) { described_class.new(brainstorming_api_client, json_api_client) }
-  let(:text) { 'The sky is blue and the sun is bright.' }
+  let(:finder) { described_class.new }
+  let(:article) { 'The sky is blue and the sun is bright.' }
   let(:topic) { 'sample topic.' }
-  let(:analysis) { { insights: [], core_concepts: [], knowledge_gaps: [] } }
+  let(:prompt) do
+    <<~PROMPT
+      Topic: #{topic}
+      Article: #{article}
+    PROMPT
+  end
   let(:api_response) {
     {
       'relationships' => [
@@ -17,33 +22,35 @@ RSpec.describe ResearchAssistant::CoreEngine::RelationsFinder do
       ]
     }
   }
+  let(:response) { api_response.to_json }
 
-  describe '#find_relations' do
+  before do
+    allow(ResearchAssistant::OllamaInterface::ApiClient).to receive(:new).with('research-assistant-relation-finder-model').and_return(api_client)
+    allow(api_client).to receive(:query).with(prompt).and_return(response)
+  end
+
+  describe '#extract' do
     context 'when the API request is successful' do
       it 'returns the identified relationships' do
-        allow(brainstorming_api_client).to receive(:query).and_return(api_response.to_json)
-        allow(json_api_client).to receive(:query).with(api_response.to_json, ResearchAssistant::CoreEngine::RelationsFinder::RELATIONS_SCHEMA).and_return(api_response)
-
-        relations = finder.find_relations(topic, text, analysis)
-        expect(relations).to be_a(Array)
+        relations = finder.extract(topic, article)
         expect(relations).not_to be_empty
-        expect(relations).to all(include('insight', 'classification', 'significance'))
+        expect(relations).to include('relationships')
       end
     end
 
     context 'when the API request fails' do
       it 'raises an API error' do
-        allow(brainstorming_api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
+        allow(api_client).to receive(:query).and_raise(RuntimeError, 'API Error: Something went wrong')
 
-        expect { finder.find_relations(topic, text, analysis) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
+        expect { finder.extract(topic, article) }.to raise_error(RuntimeError, 'API Error: Something went wrong')
       end
     end
 
     context 'when there is a connection error' do
       it 'raises a connection error' do
-        allow(brainstorming_api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
+        allow(api_client).to receive(:query).and_raise(RuntimeError, 'Connection Error: Connection failed')
 
-        expect { finder.find_relations(topic, text, analysis) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
+        expect { finder.extract(topic, article) }.to raise_error(RuntimeError, 'Connection Error: Connection failed')
       end
     end
   end
