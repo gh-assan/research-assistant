@@ -1,24 +1,24 @@
 module ResearchAssistant
   module OllamaInterface
-    class ReviewClient
+    class RefinerClient
 
       attr_reader :model, :conn
 
-      def initialize(model: ResearchAssistant.config.reviewer_model)
+      def initialize(model: ResearchAssistant.config.refiner_model)
         @model = model
         @conn = Faraday.new(url: ResearchAssistant.config.ollama_url) do |f|
           f.request :json
           f.response :json
-          f.options.timeout = 1800          
-          f.options.open_timeout = 1800     
+          f.options.timeout = 600          
+          f.options.open_timeout = 600     
         end
       end
 
-      def review(article)
+      def refine_article(prompt)
         response = conn.post('/api/generate') do |req|
           req.body = {
             model: model,
-            prompt: article,
+            prompt: prompt,
             stream: false
           }
         end

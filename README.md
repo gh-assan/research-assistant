@@ -51,6 +51,10 @@
     ```sh
     ollama create research-assistant-reviewer-model -f models/ReviewerModelfile
     ```
+8. Set up refiner model:
+    ```sh
+    ollama create research-assistant-refiner-model -f models/RefinerModelfile
+    ``` 
 
 
 

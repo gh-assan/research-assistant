@@ -15,7 +15,8 @@ module ResearchAssistant
   class Configuration
     include Singleton
 
-    attr_accessor :ollama_url, :max_iterations, :log_level, :research_dir, :ollama_model, :json_model, :writer_model, :brainstorming_model, :reviewer_model
+    attr_accessor :ollama_url, :max_iterations, :log_level, :research_dir, :ollama_model, :json_model, :writer_model,
+                  :brainstorming_model, :reviewer_model, :refiner_model
 
     def initialize
       @ollama_url = ENV.fetch('OLLAMA_URL', 'http://localhost:11434')
@@ -27,6 +28,7 @@ module ResearchAssistant
       @writer_model = ENV.fetch('OLLAMA_MODEL', 'research-assistant-writer-model')
       @brainstorming_model = ENV.fetch('BRAINSTORMING_MODEL', 'research-assistant-brainstorming-model')
       @reviewer_model = ENV.fetch('REVIEW_MODEL', 'research-assistant-reviewer-model')
+      @refiner_model = ENV.fetch('REVIEW_MODEL', 'research-assistant-refiner-model')
     end
   end
 
