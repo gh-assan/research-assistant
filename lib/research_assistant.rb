@@ -21,7 +21,7 @@ module ResearchAssistant
     def initialize
       @ollama_url = ENV.fetch('OLLAMA_URL', 'http://localhost:11434')
       @max_iterations = ENV.fetch('MAX_ITERATIONS', 5).to_i
-      @max_agent_iterations = ENV.fetch('MAX_AGENT_ITERATIONS', 10).to_i
+      @max_agent_iterations = ENV.fetch('MAX_AGENT_ITERATIONS', 20).to_i
       @log_level = ENV.fetch('LOG_LEVEL', 'info')
       @research_dir = ENV.fetch('RESEARCH_DIR', 'research')
       @ollama_model = ENV.fetch('OLLAMA_MODEL', 'research-assistant-reasoning-model')

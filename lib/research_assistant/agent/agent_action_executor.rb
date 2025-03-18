@@ -2,14 +2,15 @@ module ResearchAssistant
   module Agent
     class AgentActionExecutor
 
-      attr_reader :insights_extractor, :concept_extractor, :gap_detector, :questions_engine, :relations_finder
+      attr_reader :insights_extractor, :concept_extractor, :gap_detector, :questions_engine, :relations_finder, :generic_command
 
-      def initialize(insights_extractor:, concept_extractor:, gap_detector:, questions_engine:, relations_finder:)
+      def initialize(insights_extractor:, concept_extractor:, gap_detector:, questions_engine:, relations_finder:, generic_command:)
         @insights_extractor = insights_extractor
         @concept_extractor = concept_extractor
         @gap_detector = gap_detector
         @questions_engine = questions_engine
         @relations_finder = relations_finder
+        @generic_command = generic_command
       end
 
 
@@ -26,7 +27,7 @@ module ResearchAssistant
         when "find_relations"
           relations_finder.extract(topic, article)
         else
-           "Unknown action: #{action}"
+          generic_command.extract(topic, article)
         end
       end
     end

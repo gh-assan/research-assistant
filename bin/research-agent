@@ -24,13 +24,15 @@ def main
   gap_detector = ResearchAssistant::CoreEngine::GapDetector.new
   questions_engine = ResearchAssistant::CoreEngine::QuestionEngine.new
   relations_finder = ResearchAssistant::CoreEngine::RelationsFinder.new
+  generic_command = ResearchAssistant::CoreEngine::GenericCommand.new
 
   agent_action_executor = ResearchAssistant::Agent::AgentActionExecutor.new(
     insights_extractor: insights_extractor,
     concept_extractor: concept_extractor,
     gap_detector: gap_detector,
     questions_engine: questions_engine,
-    relations_finder: relations_finder
+    relations_finder: relations_finder,
+    generic_command: generic_command
   )
 
   agent_manager = ResearchAssistant::Agent::AgentManager.new(agent_client, writer_api_client, research_id, agent_action_executor)

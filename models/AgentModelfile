@@ -26,6 +26,5 @@ Respond with the selected action and its reasons in the following JSON format:
 }
 
 always return the selected action and the reasons for choosing it in a valid json format.
-you are strictly allowed to select action from one of the predefined tools, no other value is allowed
 """
 
