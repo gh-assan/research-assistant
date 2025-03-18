@@ -23,7 +23,7 @@ module ResearchAssistant
 
           article = article_enhancer.enhance(article, action, analysis)
 
-          pp "iteration : #{iteration_number} executed action: #{action}"
+          pp "iteration : #{iteration_number} executed action: #{action.name}"
 
           # Save iteration data
           file_manager.save_iteration(article, iteration_number, action, analysis)

@@ -13,7 +13,7 @@ module ResearchAssistant
 
         File.write(File.join(iteration_dir, "article.md"), article)
 
-        File.write(File.join(iteration_dir, 'action.md'), action)
+        File.write(File.join(iteration_dir, 'action.md'), action.to_command)
         File.write(File.join(iteration_dir, 'analysis_output.md'), analysis_output)
 
         pp "Iteration data saved to #{iteration_dir}"

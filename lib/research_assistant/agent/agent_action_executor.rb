@@ -15,7 +15,7 @@ module ResearchAssistant
 
 
       def run(action, topic, article)
-        case action
+        case action.name
         when "extract_insights"
           insights_extractor.extract(topic, article)
         when "extract_concepts"
@@ -27,7 +27,7 @@ module ResearchAssistant
         when "find_relations"
           relations_finder.extract(topic, article)
         else
-          generic_command.extract(topic, article)
+          generic_command.extract(topic + " " + action.to_command, article)
         end
       end
     end
