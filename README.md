@@ -29,33 +29,10 @@
     install Olamma from https://ollama.com/
     ```
 
-4. Set up JSON model:
+4. Set up the needed models:
     ```sh
-    ollama create research-assistant-json-model -f models/JsonModelfile
+    bin/create-models
     ```
-
-5. Set up writer model:
-    ```sh
-    ollama create research-assistant-writer-model -f models/WriterModelfile
-    ```
-
-6. Set up reasoning model:
-    ```sh
-    ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
-    ```
-6. Set up brainstorming  model:
-    ```sh
-    ollama create research-assistant-brainstorming-model -f models/BrainstormingModelfile
-    ```
-7. Set up reviewer  model:
-    ```sh
-    ollama create research-assistant-reviewer-model -f models/ReviewerModelfile
-    ```
-8. Set up refiner model:
-    ```sh
-    ollama create research-assistant-refiner-model -f models/RefinerModelfile
-    ``` 
-
 
 
 ## Usage
@@ -66,23 +43,10 @@ You can initiate research processes using the command-line interface:
 bin/research "will AI take over developer role soon"
 ```
 
-## Components
+you can use the research agent by calling : 
 
-### Concept Extraction
-The ConceptExtractor module extracts key concepts and relationships from a given topic. It uses natural language processing techniques to identify and categorize important concepts.
+```sh
+bin/research-agent "will AI take over developer role soon"
+```
 
-### Question Generation
-The QuestionEngine module generates research questions based on the analysis of the provided text. It helps in identifying gaps and areas that require further investigation.
-
-### Iteration Management
-The IterationManager module manages the iterative research process. It integrates new knowledge, generates articles, and saves iteration data.
-
-### Response Analysis
-The InsightsExtractor module analyzes responses to extract insights. It categorizes insights based on their significance and relevance to the topic.
-
-### Knowledge Integration
-The KnowledgeIntegrator module integrates new knowledge into the existing analysis. It combines insights, concepts, gaps, questions, and relationships to form a comprehensive understanding.
-
-### Output Generation
-The OutputGenerator module will write the generated article into the file system, each iteration data will be written into a new folder.
 
