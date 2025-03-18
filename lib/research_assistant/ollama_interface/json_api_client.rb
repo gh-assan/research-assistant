@@ -20,11 +20,13 @@ module ResearchAssistant
       end
 
       def query(prompt, schema)
+        itr = 0
         with_retry do
+          itr += 1
           response = conn.post('/api/generate') do |req|
             req.body = {
               model: model,
-              prompt: "#{prompt} #{schema}",
+              prompt: "#{itr} #{prompt} #{schema}",
               stream: false
             }
           end

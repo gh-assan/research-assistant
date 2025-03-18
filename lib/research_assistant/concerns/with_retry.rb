@@ -6,6 +6,7 @@ module WithRetry
       yield
     rescue StandardError => e
       raise e if attempts >= max_attempts
+      pp "Retrying after error: #{e.message}"
       sleep(wait_time)
       retry
     end

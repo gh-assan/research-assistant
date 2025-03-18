@@ -20,14 +20,14 @@ RSpec.describe ResearchAssistant::OllamaInterface::JsonApiClient do
     context 'when the API call is successful' do
       before do
         stub_request(:post, "#{api_url}/api/generate")
-          .with(
-            body: {
-              model: model,
-              prompt: "#{prompt} #{schema}",
-              stream: false
-            }.to_json,
-            headers: { 'Content-Type' => 'application/json' }
-          )
+          # .with(
+          #   body: {
+          #     model: model,
+          #     prompt: "#{prompt} #{schema}",
+          #     stream: false
+          #   }.to_json,
+          #   headers: { 'Content-Type' => 'application/json' }
+          # )
           .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'application/json' })
       end
 

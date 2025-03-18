@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+require 'securerandom'
+
+def main
+  topic = ARGV[0] || "sky is blue"
+  research_id = SecureRandom.uuid
+
+  json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
+  agent_client = ResearchAssistant::OllamaInterface::JsonApiClient.new(model: ResearchAssistant.config.agent_model)
+  writer_api_client = ResearchAssistant::OllamaInterface::WriterApiClient.new
+
+
+  # Initialize components
+
+  user_intent_extractor = ResearchAssistant::CoreEngine::UserIntentExtractor.new(json_api_client)
+
+  insights_extractor = ResearchAssistant::CoreEngine::InsightsExtractor.new
+  concept_extractor = ResearchAssistant::CoreEngine::ConceptExtractor.new
+  gap_detector = ResearchAssistant::CoreEngine::GapDetector.new
+  questions_engine = ResearchAssistant::CoreEngine::QuestionEngine.new
+  relations_finder = ResearchAssistant::CoreEngine::RelationsFinder.new
+  generic_command = ResearchAssistant::CoreEngine::GenericCommand.new
+
+  agent_action_executor = ResearchAssistant::Agent::AgentActionExecutor.new(
+    insights_extractor: insights_extractor,
+    concept_extractor: concept_extractor,
+    gap_detector: gap_detector,
+    questions_engine: questions_engine,
+    relations_finder: relations_finder,
+    generic_command: generic_command
+  )
+
+  agent_manager = ResearchAssistant::Agent::AgentManager.new(agent_client, writer_api_client, research_id, agent_action_executor)
+
+  prompt = user_intent_extractor.create_prompt(topic)
+  pp prompt
+
+
+
+  article = "This is a sample article content for the topic: #{prompt}"
+
+  agent_manager.run(topic, article)
+  
+  pp "job done"
+end
+
+main if __FILE__ == $0

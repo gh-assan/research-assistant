@@ -13,5 +13,8 @@ ollama create research-assistant-reasoning-model -f models/ReasoningModelfile
 ollama create research-assistant-brainstorming-model -f models/BrainstormingModelfile
 ollama create research-assistant-reviewer-model -f models/ReviewerModelfile
 ollama create research-assistant-refiner-model -f models/RefinerModelfile
+ollama create research-assistant-generic-command-model -f models/GenericActionModelfile
+
+ollama create research-assistant-agent-model -f models/AgentModelfile
 
 echo "Model files creation completed."
