@@ -17,4 +17,7 @@ ollama create research-assistant-generic-command-model -f models/GenericActionMo
 
 ollama create research-assistant-agent-model -f models/AgentModelfile
 
+ollama create research-assistant-stories-agent-model -f models/StoriesAgentModelfile
+ollama create research-assistant-stories-generic-command-model -f models/StoriesGenericCommandsModelfile
+
 echo "Model files creation completed."
