@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+require 'securerandom'
+
+def main
+  topic = ARGV[0] || "sky is blue"
+  story_id = SecureRandom.uuid
+
+  json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
+  agent_client = ResearchAssistant::OllamaInterface::JsonApiClient.new(model: 'research-assistant-stories-agent-model')
+  writer_api_client = ResearchAssistant::OllamaInterface::WriterApiClient.new(model: 'research-assistant-stories-generic-command-model')
+
+
+  # Initialize components
+
+  user_intent_extractor = ResearchAssistant::StoryAgent::UserIntentExtractor.new(json_api_client)
+  
+  generic_command = ResearchAssistant::StoryAgent::GenericCommand.new
+
+  agent_action_executor = ResearchAssistant::StoryAgent::AgentActionExecutor.new(
+    generic_command: generic_command
+  )
+
+  agent_manager = ResearchAssistant::StoryAgent::AgentManager.new(agent_client, writer_api_client, story_id, agent_action_executor)
+
+  prompt = user_intent_extractor.create_prompt(topic)
+  pp prompt
+
+
+
+  story = "This is a sample story content for the topic: #{prompt}"
+
+  agent_manager.run(topic, story)
+  
+  pp "job done"
+end
+
+main if __FILE__ == $0

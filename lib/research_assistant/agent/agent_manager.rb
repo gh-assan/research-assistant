@@ -13,8 +13,8 @@ module ResearchAssistant
         @agent_action_executor ||= agent_action_executor
       end
 
-    def run(topic, generated_article)
-        iteration_number =  1
+      def run(topic, generated_article)
+        iteration_number = 1
         article = generated_article
         until termination_evaluator.should_terminate?(iteration_number)
 
