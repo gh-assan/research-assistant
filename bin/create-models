@@ -20,4 +20,7 @@ ollama create research-assistant-agent-model -f models/AgentModelfile
 ollama create research-assistant-stories-agent-model -f models/StoriesAgentModelfile
 ollama create research-assistant-stories-generic-command-model -f models/StoriesGenericCommandsModelfile
 
+ollama create research-assistant-reviews-agent-model -f models/ReviewsAgentModelfile
+ollama create research-assistant-reviews-generic-command-model -f models/ReviewsGenericCommandsModelfile
+
 echo "Model files creation completed."
