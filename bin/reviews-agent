@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'dotenv/load'
+
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'research_assistant'
+require 'securerandom'
+
+def main
+  topic = ARGV[0] || "Please review this story"
+  review_id = SecureRandom.uuid
+
+  json_api_client = ResearchAssistant::OllamaInterface::JsonApiClient.new
+  agent_client = ResearchAssistant::OllamaInterface::JsonApiClient.new(model: 'research-assistant-reviews-agent-model')
+  writer_api_client = ResearchAssistant::OllamaInterface::WriterApiClient.new(model: 'research-assistant-reviews-generic-command-model')
+
+
+  # Initialize components
+
+  user_intent_extractor = ResearchAssistant::ReviewAgent::UserIntentExtractor.new(json_api_client)
+  
+  generic_command = ResearchAssistant::ReviewAgent::GenericCommand.new
+
+  agent_action_executor = ResearchAssistant::ReviewAgent::AgentActionExecutor.new(
+    generic_command: generic_command
+  )
+
+  agent_manager = ResearchAssistant::ReviewAgent::AgentManager.new(agent_client, writer_api_client, review_id, agent_action_executor)
+
+  prompt = user_intent_extractor.create_prompt(topic)
+  pp prompt
+
+  article_name = '../story/992e8322-3082-4e4b-9e69-373811aa1911/iterations/9/story.md'
+  # Load the article content from the file
+  article_path = File.expand_path(article_name, __dir__)
+  text = File.read(article_path)
+
+
+  agent_manager.run(topic, text)
+  
+  pp "job done"
+end
+
+main if __FILE__ == $0
