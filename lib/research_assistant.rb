@@ -17,7 +17,7 @@ module ResearchAssistant
 
     attr_accessor :ollama_url, :max_iterations, :log_level, :research_dir, :ollama_model, :json_model, :writer_model,
                   :brainstorming_model, :reviewer_model, :refiner_model, :max_agent_iterations, :agent_model,
-                  :story_dir, :max_story_agent_iterations, :max_review_agent_iterations
+                  :story_dir, :max_story_agent_iterations, :max_review_agent_iterations, :memory_agent_model
 
     def initialize
       @ollama_url = ENV.fetch('OLLAMA_URL', 'http://localhost:11434')
@@ -34,6 +34,7 @@ module ResearchAssistant
       @reviewer_model = ENV.fetch('REVIEW_MODEL', 'research-assistant-reviewer-model')
       @refiner_model = ENV.fetch('REVIEW_MODEL', 'research-assistant-refiner-model')
       @agent_model = ENV.fetch('AGENT_MODEL', 'research-assistant-agent-model')
+      @memory_agent_model = ENV.fetch('MEMORY_AGENT_MODEL', 'research-assistant-memory-agent-model')
 
       @story_dir = ENV.fetch('STORY_DIR', 'data/story')
       @review_dir = ENV.fetch('REVIEW_DIR', 'data/review')
