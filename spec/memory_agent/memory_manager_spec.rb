@@ -22,72 +22,46 @@ RSpec.describe ResearchAssistant::MemoryAgent::MemoryManager do
   end
 
   describe "#read" do
-    it "returns the content of the memory file" do
-      File.write(memory_file, JSON.pretty_generate({ "key" => "value" }))
+    it "delegates to MemoryStore#read" do
+      expect(memory_manager.instance_variable_get(:@memory_store)).to receive(:read).and_return({ "key" => "value" })
       expect(memory_manager.read).to eq({ "key" => "value" })
     end
   end
 
   describe "#write" do
-    it "writes the given data to the memory file" do
-      memory_manager.write({ "new_key" => "new_value" })
-      expect(JSON.parse(File.read(memory_file))).to eq({ "new_key" => "new_value" })
+    it "delegates to MemoryStore#write and adds last_accessed timestamp" do
+      data = { "new_key" => "new_value" }
+      expect(memory_manager.instance_variable_get(:@memory_store)).to receive(:write) do |arg|
+        expect(arg["new_key"]).to be_a(Hash)
+        expect(arg["new_key"]['value']).to eq("new_value")
+        expect(arg["new_key"]['last_accessed']).to be_within(2).of(Time.now.to_i)
+      end
+      memory_manager.write(data)
+    end
+  end
+
+  describe "#consolidate_and_forget_memories" do
+    it "delegates to MemoryOptimizer#consolidate_and_forget_memories and writes the result" do
+      all_memories = { "old_memory" => { 'value' => "old", 'last_accessed' => 1 } }
+      updated_memories = { "recent_memory" => { 'value' => "recent", 'last_accessed' => 100 } }
+
+      allow(memory_manager).to receive(:read).and_return(all_memories)
+      expect(memory_manager.instance_variable_get(:@memory_optimizer)).to receive(:consolidate_and_forget_memories).with(all_memories, 30).and_return(updated_memories)
+      expect(memory_manager).to receive(:write).with(updated_memories)
+
+      memory_manager.consolidate_and_forget_memories(30)
     end
   end
 
   describe "#retrieve_contextual_memories" do
-    before do
-      memory_manager.write({
-        "memory1" => "This is about Ruby programming.",
-        "memory2" => "Learning about Python data structures.",
-        "memory3" => "Ruby on Rails development is fun.",
-        "memory4" => "A completely unrelated memory."
-      })
-    end
+    it "delegates to ContextualRetriever#retrieve_contextual_memories" do
+      all_memories = { "memory1" => "Ruby" }
+      retrieved_memories = [{ key: "memory1", value: "Ruby" }]
 
-    it "returns relevant memories based on context keywords" do
-      context = "I'm working on a Ruby project."
-      retrieved = memory_manager.retrieve_contextual_memories(context)
-      expect(retrieved.count).to eq(2)
-      expect(retrieved.map { |m| m[:key] }).to include("memory1", "memory3")
-    end
+      allow(memory_manager).to receive(:read).and_return(all_memories)
+      expect(memory_manager.instance_variable_get(:@contextual_retriever)).to receive(:retrieve_contextual_memories).with(all_memories, "context", 5).and_return(retrieved_memories)
 
-    it "returns memories sorted by relevance (simple keyword count)" do
-      context = "Ruby programming and development."
-      retrieved = memory_manager.retrieve_contextual_memories(context)
-      expect(retrieved.first[:key]).to eq("memory1") # "Ruby programming" has both keywords
-    end
-
-    it "limits the number of returned memories" do
-      context = "programming"
-      retrieved = memory_manager.retrieve_contextual_memories(context, 1)
-      expect(retrieved.count).to eq(1)
-    end
-
-    it "returns an empty array if no relevant memories are found" do
-      context = "nonexistent topic"
-      retrieved = memory_manager.retrieve_contextual_memories(context)
-      expect(retrieved).to be_empty
-    end
-  end
-
-  describe "#extract_keywords_from_context" do
-    it "extracts unique lowercase words from the context" do
-      context = "Hello World, hello again!"
-      keywords = memory_manager.send(:extract_keywords_from_context, context)
-      expect(keywords).to match_array(["hello", "world", "again"])
-    end
-
-    it "handles empty context" do
-      context = ""
-      keywords = memory_manager.send(:extract_keywords_from_context, context)
-      expect(keywords).to be_empty
-    end
-
-    it "handles context with special characters" do
-      context = "@#$!%^&*()_+-=[]{}|;:'',./<>?`~"
-      keywords = memory_manager.send(:extract_keywords_from_context, context)
-      expect(keywords).to be_empty
+      expect(memory_manager.retrieve_contextual_memories("context")).to eq(retrieved_memories)
     end
   end
 end

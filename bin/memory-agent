@@ -36,10 +36,11 @@ def main
     memory_manager: memory_manager
   )
 
+  pp "Type of file_manager before AgentManager.new: #{file_manager.class}"
   agent_manager = ResearchAssistant::MemoryAgent::AgentManager.new(
     json_api_client,
     writer_api_client,
-    research_id,
+    file_manager,
     agent_action_executor
   )
 
