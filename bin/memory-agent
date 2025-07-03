@@ -39,7 +39,7 @@ def main
   agent_manager = ResearchAssistant::MemoryAgent::AgentManager.new(
     json_api_client,
     writer_api_client,
-    file_manager,
+    research_id,
     agent_action_executor
   )
 

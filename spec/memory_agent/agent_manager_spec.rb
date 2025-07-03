@@ -39,7 +39,7 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
       expect(agent_manager.action_determiner).to receive(:get_next_action).with("", { "memory_key" => "memory_value" })
       expect(agent_action_executor).to receive(:run).with(action1, "topic", "")
       expect(agent_action_executor).to receive(:run).with(action2, "topic", "")
-            expect(file_manager).to receive(:save_iteration).with("enhanced_article", 1, actions, ["Logged action history", "analysis_1", "analysis_2"])
+            expect(file_manager).to receive(:save_iteration).with("enhanced_article", 1, [action1, action2], ["analysis_1", "analysis_2"])
 
       agent_manager.run("topic", "")
     end

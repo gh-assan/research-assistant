@@ -23,16 +23,21 @@ module ResearchAssistant
           actions = action_determiner.get_next_action(article, memory)
           pp "AgentManager: Actions received from ActionDeterminer: #{actions.inspect}"
           all_analyses = []
+          article_enhancement_analyses = []
           all_actions = []
 
           actions.each do |action|
             analysis = agent_action_executor.run(action, topic, article)
             all_analyses << analysis
             all_actions << action
+
+            unless ["add_to_memory", "update_memory", "read_memory"].include?(action.name)
+              article_enhancement_analyses << analysis
+            end
             pp "iteration : #{iteration_number} executed action: #{action.name}"
           end
 
-          article = article_enhancer.enhance(article, all_actions, all_analyses)
+          article = article_enhancer.enhance(article, all_actions, article_enhancement_analyses)
 
           # Save iteration data
           file_manager.save_iteration(article, iteration_number, all_actions, all_analyses)
