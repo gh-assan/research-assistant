@@ -1,0 +1,47 @@
+require 'spec_helper'
+
+RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
+  let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
+  let(:writer_api_client) { instance_double(ResearchAssistant::OllamaInterface::WriterApiClient) }
+  let(:agent_action_executor) { instance_double(ResearchAssistant::MemoryAgent::AgentActionExecutor) }
+  let(:research_id) { "test_id" }
+  let(:agent_manager) do
+    described_class.new(
+      json_api_client,
+      writer_api_client,
+      research_id,
+      agent_action_executor
+    )
+  end
+
+  before do
+    allow(agent_manager.termination_evaluator).to receive(:should_terminate?).and_return(false, true)
+    # Explicitly call let-defined methods to ensure they are initialized
+    
+    allow(file_manager).to receive(:memory_manager).and_return(memory_manager)
+    allow(memory_manager).to receive(:read).and_return({ "memory_key" => "memory_value" })
+    allow(file_manager).to receive(:save_iteration)
+  end
+
+  describe "#run" do
+    it "loads memory, gets the next action, executes it, and enhances the article" do
+      action1 = ResearchAssistant::MemoryAgent::Action.new(name: "test_action_1", reasons: "test_reasons_1")
+      action2 = ResearchAssistant::MemoryAgent::Action.new(name: "test_action_2", reasons: "test_reasons_2")
+      actions = [action1, action2]
+
+            expect(memory_manager).to receive(:read)
+      allow(agent_manager.action_determiner).to receive(:get_next_action).and_return(actions)
+      allow(agent_action_executor).to receive(:run).with(action1, "topic", "").and_return("analysis_1")
+      allow(agent_action_executor).to receive(:run).with(action2, "topic", "").and_return("analysis_2")
+      allow(agent_manager.article_enhancer).to receive(:enhance).and_return("enhanced_article")
+
+      expect(memory_manager).to receive(:read)
+      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", { "memory_key" => "memory_value" })
+      expect(agent_action_executor).to receive(:run).with(action1, "topic", "")
+      expect(agent_action_executor).to receive(:run).with(action2, "topic", "")
+            expect(file_manager).to receive(:save_iteration).with("enhanced_article", 1, actions, ["analysis_1", "analysis_2"])
+
+      agent_manager.run("topic", "")
+    end
+  end
+end

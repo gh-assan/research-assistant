@@ -30,7 +30,7 @@ module ResearchAssistant
               stream: false
             }
           end
-
+          pp "JsonApiClient: Raw response body: #{response.body}"
           handle_response(response)
         end
       rescue Faraday::Error => e
@@ -41,8 +41,10 @@ module ResearchAssistant
 
       def handle_response(response)
         raise "API Error: #{response.body['error']}" unless response.success?
-
-        parse_json(response.body['response'])
+        pp "JsonApiClient: Response body['response']: #{response.body['response']}"
+        parsed_json = parse_json(response.body['response'])
+        pp "JsonApiClient: Parsed JSON: #{parsed_json}"
+        parsed_json
       end
 
       def parse_json(response_body)
