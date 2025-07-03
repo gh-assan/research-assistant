@@ -43,6 +43,11 @@ module ResearchAssistant
         all_memories = read
         @contextual_retriever.retrieve_contextual_memories(all_memories, context, limit)
       end
+
+      def learn_from_memories
+        all_memories = read
+        @memory_optimizer.learn_from_memories(all_memories)
+      end
     end
   end
 end

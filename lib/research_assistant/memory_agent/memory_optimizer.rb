@@ -21,6 +21,28 @@ module ResearchAssistant
         end
         updated_memories
       end
+
+      def learn_from_memories(all_memories)
+        # Placeholder for memory-based learning logic.
+        # This could involve:
+        # - Identifying frequently occurring patterns or concepts.
+        # - Inferring new relationships between memories.
+        # - Refining existing knowledge based on new information.
+        # For now, let's just return a simple analysis of common keywords.
+        keyword_counts = Hash.new(0)
+        all_memories.each do |key, memory_data|
+          content = memory_data.is_a?(Hash) && memory_data['value'] ? memory_data['value'] : memory_data
+          if content.is_a?(String)
+            content.downcase.scan(/\b[a-z0-9]+\b/).each do |word|
+              keyword_counts[word] += 1
+            end
+          end
+        end
+        # Filter out common stop words and single-character words
+        filtered_keywords = keyword_counts.reject { |word, count| word.length <= 2 || %w(the a an and or but for nor on in at by with from to of).include?(word) }
+        # Sort by count and return top 5
+        filtered_keywords.sort_by { |word, count| -count }.to_h
+      end
     end
   end
 end
