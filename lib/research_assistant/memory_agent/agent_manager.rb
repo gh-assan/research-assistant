@@ -21,6 +21,7 @@ module ResearchAssistant
         until termination_evaluator.should_terminate?(iteration_number)
           memory = memory_manager.read
           actions = action_determiner.get_next_action(article, memory)
+          pp "AgentManager: Actions received from ActionDeterminer: #{actions.inspect}"
           all_analyses = []
           all_actions = []
 

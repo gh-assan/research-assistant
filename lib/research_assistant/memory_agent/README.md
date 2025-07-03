@@ -17,6 +17,29 @@ Its memory is stored in a simple `memory.json` file, making it transparent and e
     - `update_memory`: Modifies the value of an existing key. This allows the agent to refine or correct its previous knowledge.
     - `read_memory`: Retrieves the value associated with a key from memory. This allows the agent to use stored information in its content generation tasks.
 
+### What to Store in Memory
+
+The Memory Agent's effectiveness is greatly enhanced by strategically storing diverse types of information. Here are examples of what can be stored:
+
+*   **Strategic Information:**
+    *   `research_goals`: The overarching objectives of the research.
+    *   `knowledge_gaps_identified`: Specific areas where information is missing or unclear.
+    *   `hypotheses_formed`: Any theories or predictions being explored.
+    *   `key_questions`: Important questions guiding the research.
+    *   `progress_summary`: A brief overview of what has been achieved so far.
+
+*   **Contextual Information:**
+    *   `definitions`: Key terms and their definitions.
+    *   `summaries`: Concise summaries of sections or the entire article.
+    *   `counter_arguments`: Opposing viewpoints or evidence.
+    *   `sources_cited`: Important references or URLs.
+    *   `examples_used`: Illustrative examples from the article.
+
+*   **Self-Reflection/Learning:**
+    *   `what_worked_well`: Strategies or actions that yielded good results.
+    *   `challenges_faced`: Difficulties encountered and how they were addressed.
+    *   `learnings_from_iteration`: General insights gained about the research process itself.
+
 ## Usage
 
 To run the Memory Agent, use the provided command-line script and pass a research topic as an argument:
