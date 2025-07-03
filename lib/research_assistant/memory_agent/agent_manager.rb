@@ -6,6 +6,7 @@ module ResearchAssistant
       attr_reader :file_manager, :termination_evaluator, :article_enhancer, :action_determiner, :agent_action_executor
 
       def initialize(json_api_client, writer_api_client, file_manager, agent_action_executor)
+        pp "AgentManager#initialize: Type of file_manager: #{file_manager.class}"
         @file_manager = file_manager
         @termination_evaluator ||= TerminationEvaluator.new
         @article_enhancer ||= ArticleEnhancer.new(writer_api_client)
@@ -16,7 +17,8 @@ module ResearchAssistant
       def run(topic, generated_article)
         iteration_number = 1
         article = generated_article
-        memory_manager = file_manager.memory_manager
+        pp "AgentManager#run: Type of @file_manager: #{@file_manager.class}"
+        memory_manager = @file_manager.memory_manager
 
         until termination_evaluator.should_terminate?(iteration_number)
           memory = memory_manager.read
