@@ -79,3 +79,26 @@ data/research/<research_id>/
 
 - **`memory.json`**: The central knowledge store for the agent. This file contains all the information the agent has decided to remember.
 - **`iterations/`**: This directory contains a complete history of the agent's work, with a subdirectory for each step it took.
+
+## Prioritization, Scoring, and Error Handling
+
+### Memory-Driven Prioritization
+- The Memory Agent uses a scoring algorithm to rank memories by relevance, importance, and recency.
+- Prioritized memories are used to dynamically determine the next best research action.
+- The prioritization system is extensible and can be linked to research goals or customized for different workflows.
+
+### Error Handling and Logging
+- All memory agent operations (including API calls and JSON parsing) use robust error handling with custom error classes:
+    - `JsonApiParseError`, `JsonApiResponseError`, `JsonApiConnectionError`, etc.
+- Errors are logged to `log/json_api_client.log` with timestamps, error type, message, and backtrace.
+- The log directory is created automatically if it does not exist.
+- If you encounter issues, check the log file for detailed diagnostics.
+
+### Example: Prioritization in Action
+
+At each iteration, the agent:
+1. Loads and scores all memories.
+2. Passes prioritized memories to the action determiner.
+3. Executes the most relevant actions first, improving research efficiency and focus.
+
+For more details, see the main project `README.md` and `architecture/ARCHITECTURE.md`.
