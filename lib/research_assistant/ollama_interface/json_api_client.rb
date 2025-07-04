@@ -31,7 +31,13 @@ module ResearchAssistant
             }
           end
           pp "JsonApiClient: Raw response body: #{response.body}"
-          handle_response(response)
+          begin
+            handle_response(response)
+          rescue => e
+            pp "JsonApiClient: Error in handle_response: #{e.class} - #{e.message}"
+            pp e.backtrace.first(10)
+            raise
+          end
         end
       rescue Faraday::Error => e
         raise "Connection Error: #{e.message}"

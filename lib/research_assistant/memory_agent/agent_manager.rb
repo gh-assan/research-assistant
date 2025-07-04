@@ -29,7 +29,14 @@ module ResearchAssistant
           pp "Prioritized memories: #{prioritized_memories.inspect}"
 
           # Use prioritized memories in decision-making
-          actions = action_determiner.get_next_action(article, prioritized_memories)
+          begin
+            actions = action_determiner.get_next_action(article, prioritized_memories)
+          rescue => e
+            pp "Error in ActionDeterminer#get_next_action: #{e.class} - #{e.message}"
+            pp e.backtrace.first(10)
+            # Optionally, you could log to a file or take other recovery actions here
+            break # or next, or handle as appropriate
+          end
           pp "AgentManager: Actions received from ActionDeterminer: #{actions.inspect}"
           all_analyses = []
           article_enhancement_analyses = []
