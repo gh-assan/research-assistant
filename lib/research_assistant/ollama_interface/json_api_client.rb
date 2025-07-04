@@ -28,6 +28,9 @@ module ResearchAssistant
       def log_error(message, exception)
         log_msg = "[JsonApiClient][#{Time.now}] #{message}: #{exception.class} - #{exception.message}\n"
         log_msg += exception.backtrace.first(10).join("\n") if exception.backtrace
+        # Ensure log directory exists before writing
+        log_dir = File.dirname("log/json_api_client.log")
+        Dir.mkdir(log_dir) unless Dir.exist?(log_dir)
         File.open("log/json_api_client.log", "a") { |f| f.puts(log_msg) }
         pp log_msg
       end
