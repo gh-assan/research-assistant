@@ -103,6 +103,20 @@ This component is responsible for the persistence of all generated data.
 - **`FileManager`**: Provides an abstraction for file operations, creating unique directories for each research run (`research_id`) or story run (`story_id`).
 - **Directory Structure**: It saves all artifacts from the research and story generation processes into iteration-specific subdirectories, ensuring a complete record of the process.
 
+### 3.10. Memory Prioritization
+
+The Memory Agent now includes a `MemoryPrioritizer` module that ranks stored memories based on relevance, importance, and recency. This prioritization is integrated into the agent's decision-making loop, ensuring that the most critical memories are utilized first.
+
+- **MemoryPrioritizer (`lib/research_assistant/memory_agent/memory_prioritizer.rb`)**:
+  - Implements a scoring algorithm to rank memories.
+  - Provides prioritized memories to the `AgentManager` for decision-making.
+
+- **AgentManager (`lib/research_assistant/memory_agent/agent_manager.rb`)**:
+  - Integrates the `MemoryPrioritizer` to use ranked memories in its workflow.
+
+- **Testing**:
+  - Comprehensive tests for memory prioritization are included in `spec/memory_agent/memory_prioritizer_spec.rb` and `spec/memory_agent/agent_manager_spec.rb`.
+
 ## 4. Data Flow
 
 The data flow remains largely the same as described previously, but can be initiated by different entry points (`bin/research`, `bin/research-agent`, `bin/stories-agent`, etc.) that activate their corresponding engines. Each engine then follows its internal logic, using the **Ollama Interface** to communicate with LLMs and the **Knowledge Base** to persist its results.

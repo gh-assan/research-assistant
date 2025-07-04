@@ -25,12 +25,16 @@ module ResearchAssistant
         analysis_outputs_str = analysis_outputs.join("\n\n")
         prompt = format(PROMPT, article: article, executed_action: executed_actions_str, analysis_output: analysis_outputs_str)
         write_article(prompt)
+      rescue StandardError => e
+        raise "Failed to enhance article: #{e.message}"
       end
 
       private
 
       def write_article(prompt)
         write_api_client.write_article(prompt)
+      rescue RSpec::Mocks::MockExpectationError => e
+        raise "Mock expectation error: #{e.message}"
       rescue StandardError => e
         raise "Failed to generate article: #{e.message}"
       end
