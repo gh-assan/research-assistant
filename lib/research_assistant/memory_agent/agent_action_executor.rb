@@ -27,19 +27,19 @@ module ResearchAssistant
           questions_engine.extract(topic, article)
         when "find_relations"
           relations_finder.extract(topic, article)
-        when "add_to_memory"
-          memory = memory_manager.read
-          memory[action.key] = action.value
-          memory_manager.write(memory)
-          "Added to memory: #{action.key} -> #{action.value}"
-        when "update_memory"
-          memory = memory_manager.read
-          memory[action.key] = action.value
-          memory_manager.write(memory)
-          "Updated memory: #{action.key} -> #{action.value}"
-        when "read_memory"
-          memory = memory_manager.read
-          memory[action.key]
+        when "add_concept"
+          kg = memory_manager.read
+          kg.add_concept(action.value)
+          memory_manager.write(kg)
+          "Added concept: #{action.value}"
+        when "add_relationship"
+          kg = memory_manager.read
+          kg.add_relationship(action.key, action.value, action.reasons)
+          memory_manager.write(kg)
+          "Added relationship: #{action.key} -> #{action.value} (#{action.reasons})"
+        when "find_related_concepts"
+          kg = memory_manager.read
+          kg.find_related_concepts(action.value)
         else
           generic_command.extract(topic + " " + action.to_command, article)
         end

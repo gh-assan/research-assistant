@@ -101,21 +101,19 @@ This is a specialized version of the Agent Engine, tailored specifically for cre
 This component is responsible for the persistence of all generated data.
 
 - **`FileManager`**: Provides an abstraction for file operations, creating unique directories for each research run (`research_id`) or story run (`story_id`).
+- **`KnowledgeGraph`**: A new component within the `knowledge_base` module that stores and manages concepts and their relationships as a graph structure. This allows for more sophisticated understanding and retrieval of interconnected information.
 - **Directory Structure**: It saves all artifacts from the research and story generation processes into iteration-specific subdirectories, ensuring a complete record of the process.
 
-### 3.10. Memory Prioritization
+### 3.10. Memory Agent (`lib/research_assistant/memory_agent/`)
 
-The Memory Agent now includes a `MemoryPrioritizer` module that ranks stored memories based on relevance, importance, and recency. This prioritization is integrated into the agent's decision-making loop, ensuring that the most critical memories are utilized first.
+The Memory Agent now leverages a `KnowledgeGraph` for storing and managing memories, moving beyond a simple key-value store.
 
-- **MemoryPrioritizer (`lib/research_assistant/memory_agent/memory_prioritizer.rb`)**:
-  - Implements a scoring algorithm to rank memories.
-  - Provides prioritized memories to the `AgentManager` for decision-making.
-
-- **AgentManager (`lib/research_assistant/memory_agent/agent_manager.rb`)**:
-  - Integrates the `MemoryPrioritizer` to use ranked memories in its workflow.
-
+- **`MemoryManager`**: Now interacts directly with the `KnowledgeGraph` to store, retrieve, and manage concepts and relationships.
+- **`ActionDeterminer`**: Utilizes the `KnowledgeGraph` to make more informed decisions about the next actions, considering conceptual connections.
+- **`AgentActionExecutor`**: Includes new actions for adding concepts and relationships to the `KnowledgeGraph`, and for querying related concepts.
 - **Testing**:
-  - Comprehensive tests for memory prioritization are included in `spec/memory_agent/memory_prioritizer_spec.rb` and `spec/memory_agent/agent_manager_spec.rb`.
+  - Comprehensive tests for the `KnowledgeGraph` are included in `spec/knowledge_base/knowledge_graph_spec.rb`.
+  - Existing tests for `MemoryManager` and `AgentManager` have been updated to reflect the new `KnowledgeGraph` integration.
 
 ## 4. Data Flow
 

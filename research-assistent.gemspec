@@ -12,4 +12,5 @@ Gem::Specification.new do |spec|
   spec.summary       = %w(research-assistant)
   spec.description   = %w(research-assistant)
   spec.license       = 'MIT'
+  spec.add_dependency "rgl"
 end

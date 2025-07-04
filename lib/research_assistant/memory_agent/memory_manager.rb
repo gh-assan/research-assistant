@@ -1,52 +1,38 @@
 require 'json'
-require_relative 'memory_store'
+require_relative '../knowledge_base/knowledge_graph'
 require_relative 'contextual_retriever'
-require_relative 'memory_optimizer'
 
 module ResearchAssistant
   module MemoryAgent
     class MemoryManager
       def initialize(research_id)
         @base_path = File.join(ResearchAssistant.config.research_dir, research_id)
-        @memory_file = File.join(@base_path, 'memory.json')
+        @memory_file = File.join(@base_path, 'knowledge_graph.json')
         pp "MemoryManager: Initializing memory file: #{@memory_file}"
 
-        @memory_store = MemoryStore.new(@memory_file)
+        if File.exist?(@memory_file)
+          @knowledge_graph = KnowledgeBase::KnowledgeGraph.from_json(File.read(@memory_file))
+        else
+          @knowledge_graph = KnowledgeBase::KnowledgeGraph.new
+          FileUtils.mkdir_p(File.dirname(@memory_file))
+          write(@knowledge_graph)
+        end
         @contextual_retriever = ContextualRetriever.new
-        @memory_optimizer = MemoryOptimizer.new
       end
 
       def read
-        @memory_store.read
+        @knowledge_graph
       end
 
-      def write(data)
-        # Update last_accessed timestamp for all memories being written
-        data.each do |key, value|
-          if value.is_a?(Hash)
-            value['last_accessed'] = Time.now.to_i
-          else
-            # If not a hash, wrap it in a hash to add metadata
-            data[key] = { 'value' => value, 'last_accessed' => Time.now.to_i }
-          end
-        end
-        @memory_store.write(data)
-      end
-
-      def consolidate_and_forget_memories(forgetting_threshold_days = 30)
-        all_memories = read
-        updated_memories = @memory_optimizer.consolidate_and_forget_memories(all_memories, forgetting_threshold_days)
-        write(updated_memories)
+      def write(kg)
+        pp "MemoryManager: Writing to file: #{@memory_file}"
+        pp "MemoryManager: Data to write: #{kg.to_json}"
+        File.write(@memory_file, kg.to_json)
       end
 
       def retrieve_contextual_memories(context, limit = 5)
-        all_memories = read
+        all_memories = @knowledge_graph.graph.vertices
         @contextual_retriever.retrieve_contextual_memories(all_memories, context, limit)
-      end
-
-      def learn_from_memories
-        all_memories = read
-        @memory_optimizer.learn_from_memories(all_memories)
       end
     end
   end

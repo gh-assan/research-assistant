@@ -18,19 +18,12 @@ module ResearchAssistant
         iteration_number = 1
         article = generated_article
         pp "AgentManager#run: Type of @file_manager: #{@file_manager.class}"
-        memory_manager = @file_manager.memory_manager
-
-        # Integrate MemoryPrioritizer to prioritize memories
-        memory_prioritizer = MemoryPrioritizer.new(memory_manager)
+        knowledge_graph = @file_manager.memory_manager.read
 
         until termination_evaluator.should_terminate?(iteration_number)
-          # Prioritize memories for the current topic
-          prioritized_memories = memory_prioritizer.prioritize_memories(topic)
-          pp "Prioritized memories: #{prioritized_memories.inspect}"
-
           # Use prioritized memories in decision-making
           begin
-            actions = action_determiner.get_next_action(article, prioritized_memories)
+            actions = action_determiner.get_next_action(article, knowledge_graph)
           rescue => e
             pp "Error in ActionDeterminer#get_next_action: #{e.class} - #{e.message}"
             pp e.backtrace.first(10)
@@ -47,7 +40,7 @@ module ResearchAssistant
             all_analyses << analysis
             all_actions << action
 
-            unless ["add_to_memory", "update_memory", "read_memory"].include?(action.name)
+            unless ["add_concept", "add_relationship", "find_related_concepts"].include?(action.name)
               article_enhancement_analyses << analysis
             end
             pp "iteration : #{iteration_number} executed action: #{action.name}"

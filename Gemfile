@@ -4,7 +4,9 @@ source 'https://rubygems.org'
 gem 'faraday', '~> 2.0'     # HTTP client for Ollama API
 gem 'dry-validation'        # Validation schemas
 gem 'smart_properties'      # Property management
-gem 'zeitwerk'              # Auto-loader
+gem "zeitwerk"
+gem "rgl"
+              # Auto-loader
 gem 'async'                 # Concurrency
 gem 'pry'                   # Debugging
 gem 'rake'                  # Task management

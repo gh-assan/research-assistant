@@ -2,6 +2,7 @@ require 'spec_helper'
 
 RSpec.describe ResearchAssistant::MemoryAgent::AgentActionExecutor do
   let(:memory_manager) { instance_double(ResearchAssistant::MemoryAgent::MemoryManager) }
+  let(:knowledge_graph) { instance_double(ResearchAssistant::KnowledgeBase::KnowledgeGraph) }
   let(:executor) do
     described_class.new(
       insights_extractor: nil,
@@ -14,33 +15,36 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentActionExecutor do
     )
   end
 
+  before do
+    allow(memory_manager).to receive(:read).and_return(knowledge_graph)
+    allow(memory_manager).to receive(:write)
+  end
+
   describe "#run" do
-    context "when the action is add_to_memory" do
-      let(:action) { ResearchAssistant::MemoryAgent::Action.new(name: "add_to_memory", key: "test_key", value: "test_value") }
+    context "when the action is add_concept" do
+      let(:action) { ResearchAssistant::MemoryAgent::Action.new(name: "add_concept", value: "new_concept") }
 
-      it "adds the key-value pair to the memory" do
-        expect(memory_manager).to receive(:read).and_return({})
-        expect(memory_manager).to receive(:write).with({ "test_key" => "test_value" })
+      it "adds a concept to the knowledge graph" do
+        expect(knowledge_graph).to receive(:add_concept).with("new_concept")
         executor.run(action, "topic", "article")
       end
     end
 
-    context "when the action is update_memory" do
-      let(:action) { ResearchAssistant::MemoryAgent::Action.new(name: "update_memory", key: "test_key", value: "new_value") }
+    context "when the action is add_relationship" do
+      let(:action) { ResearchAssistant::MemoryAgent::Action.new(name: "add_relationship", key: "source_concept", value: "target_concept", reasons: "relationship_label") }
 
-      it "updates the value of the key in the memory" do
-        expect(memory_manager).to receive(:read).and_return({ "test_key" => "old_value" })
-        expect(memory_manager).to receive(:write).with({ "test_key" => "new_value" })
+      it "adds a relationship to the knowledge graph" do
+        expect(knowledge_graph).to receive(:add_relationship).with("source_concept", "target_concept", "relationship_label")
         executor.run(action, "topic", "article")
       end
     end
 
-    context "when the action is read_memory" do
-      let(:action) { ResearchAssistant::MemoryAgent::Action.new(name: "read_memory", key: "test_key") }
+    context "when the action is find_related_concepts" do
+      let(:action) { ResearchAssistant::MemoryAgent::Action.new(name: "find_related_concepts", value: "concept_to_find") }
 
-      it "reads the value of the key from the memory" do
-        expect(memory_manager).to receive(:read).and_return({ "test_key" => "test_value" })
-        expect(executor.run(action, "topic", "article")).to eq("test_value")
+      it "finds related concepts from the knowledge graph" do
+        expect(knowledge_graph).to receive(:find_related_concepts).with("concept_to_find").and_return(["related_concept"])
+        expect(executor.run(action, "topic", "article")).to eq(["related_concept"])
       end
     end
   end
