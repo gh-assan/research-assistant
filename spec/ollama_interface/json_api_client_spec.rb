@@ -46,7 +46,8 @@ RSpec.describe ResearchAssistant::OllamaInterface::JsonApiClient do
       end
 
       it 'raises a JSON parsing error' do
-        expect { api_client.query(prompt, schema) }.to raise_error(RuntimeError, /JSON Parsing Error/)
+        # Expect the new custom error class
+        expect { api_client.query(prompt, schema) }.to raise_error(ResearchAssistant::OllamaInterface::JsonApiClient::JsonApiParseError, /JSON Parsing Error/)
       end
     end
   end

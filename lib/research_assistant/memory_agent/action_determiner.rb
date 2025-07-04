@@ -25,7 +25,10 @@ module ResearchAssistant
         response = json_api_client.query(input.to_json, SCHEME)
 
         response.map do |action_data|
-          action = Action.new(name: action_data['action'], reasons: action_data['reasons'], key: action_data['key'], value: action_data['value'])
+          # If the value is a Hash, convert it to a JSON string for Action property
+          value = action_data['value']
+          value = value.to_json if value.is_a?(Hash)
+          action = Action.new(name: action_data['action'], reasons: action_data['reasons'], key: action_data['key'], value: value)
           action_history << action.name
           action
         end

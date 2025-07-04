@@ -20,9 +20,23 @@ module ResearchAssistant
         pp "AgentManager#run: Type of @file_manager: #{@file_manager.class}"
         memory_manager = @file_manager.memory_manager
 
+        # Integrate MemoryPrioritizer to prioritize memories
+        memory_prioritizer = MemoryPrioritizer.new(memory_manager)
+
         until termination_evaluator.should_terminate?(iteration_number)
-          memory = memory_manager.read
-          actions = action_determiner.get_next_action(article, memory)
+          # Prioritize memories for the current topic
+          prioritized_memories = memory_prioritizer.prioritize_memories(topic)
+          pp "Prioritized memories: #{prioritized_memories.inspect}"
+
+          # Use prioritized memories in decision-making
+          begin
+            actions = action_determiner.get_next_action(article, prioritized_memories)
+          rescue => e
+            pp "Error in ActionDeterminer#get_next_action: #{e.class} - #{e.message}"
+            pp e.backtrace.first(10)
+            # Optionally, you could log to a file or take other recovery actions here
+            break # or next, or handle as appropriate
+          end
           pp "AgentManager: Actions received from ActionDeterminer: #{actions.inspect}"
           all_analyses = []
           article_enhancement_analyses = []

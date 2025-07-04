@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative '../../lib/research_assistant/memory_agent/memory_prioritizer'
 
 RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
@@ -19,8 +20,13 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
   before do
     allow(agent_manager.termination_evaluator).to receive(:should_terminate?).and_return(false, true)
     allow(file_manager).to receive(:memory_manager).and_return(memory_manager)
-    allow(memory_manager).to receive(:read).and_return({ "memory_key" => "memory_value" })
     allow(file_manager).to receive(:save_iteration)
+
+    # Mock the `last_accessed` values to ensure consistent test results
+    allow(memory_manager).to receive(:read).and_return({
+      'key1' => { 'value' => 'AI impact on jobs', 'importance' => 5, 'last_accessed' => 1751619685 },
+      'key2' => { 'value' => 'Unrelated topic', 'importance' => 2, 'last_accessed' => 1751619585 }
+    })
   end
 
   describe "#run" do
@@ -34,14 +40,35 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
       allow(agent_action_executor).to receive(:run).with(action1, "topic", "").and_return("analysis_1")
       allow(agent_action_executor).to receive(:run).with(action2, "topic", "").and_return("analysis_2")
       allow(agent_manager.article_enhancer).to receive(:enhance).and_return("enhanced_article")
+      allow(agent_manager.article_enhancer.write_api_client).to receive(:write_article).and_return("enhanced_article")
 
       expect(memory_manager).to receive(:read)
-      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", { "memory_key" => "memory_value" })
+      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", array_including(
+        a_hash_including(key: "key1", value: { "value" => "AI impact on jobs", "importance" => 5, "last_accessed" => 1751619685 }),
+        a_hash_including(key: "key2", value: { "value" => "Unrelated topic", "importance" => 2, "last_accessed" => 1751619585 })
+      ))
       expect(agent_action_executor).to receive(:run).with(action1, "topic", "")
       expect(agent_action_executor).to receive(:run).with(action2, "topic", "")
             expect(file_manager).to receive(:save_iteration).with("enhanced_article", 1, [action1, action2], ["analysis_1", "analysis_2"])
 
       agent_manager.run("topic", "")
+    end
+
+    it 'prioritizes memories and uses them in decision-making' do
+      allow(agent_manager.action_determiner).to receive(:get_next_action).and_return([])
+
+      # Allow write_article to accept any string argument for the test (move above run call)
+      allow(agent_manager.article_enhancer.write_api_client).to receive(:write_article).with(anything).and_return("enhanced_article")
+
+      # Set the expectation for get_next_action before running the agent
+      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", array_including(
+        a_hash_including(key: "key1", value: { "value" => "AI impact on jobs", "importance" => 5, "last_accessed" => 1751619685 }),
+        a_hash_including(key: "key2", value: { "value" => "Unrelated topic", "importance" => 2, "last_accessed" => 1751619585 })
+      )).and_return([])
+
+      expect { agent_manager.run('AI', '') }.to output(/Prioritized memories/).to_stdout
+
+      agent_manager.run('AI', '')
     end
   end
 end
