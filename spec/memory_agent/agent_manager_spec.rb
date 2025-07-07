@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../../lib/research_assistant/memory_agent/memory_prioritizer'
 
 RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
   let(:json_api_client) { instance_double(ResearchAssistant::OllamaInterface::JsonApiClient) }
@@ -16,17 +15,15 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
 
   let(:file_manager) { instance_double(ResearchAssistant::MemoryAgent::FileManager) }
   let(:memory_manager) { instance_double(ResearchAssistant::MemoryAgent::MemoryManager) }
+  let(:knowledge_graph) { instance_double(ResearchAssistant::KnowledgeBase::KnowledgeGraph) }
 
   before do
     allow(agent_manager.termination_evaluator).to receive(:should_terminate?).and_return(false, true)
     allow(file_manager).to receive(:memory_manager).and_return(memory_manager)
     allow(file_manager).to receive(:save_iteration)
-
-    # Mock the `last_accessed` values to ensure consistent test results
-    allow(memory_manager).to receive(:read).and_return({
-      'key1' => { 'value' => 'AI impact on jobs', 'importance' => 5, 'last_accessed' => 1751619685 },
-      'key2' => { 'value' => 'Unrelated topic', 'importance' => 2, 'last_accessed' => 1751619585 }
-    })
+    allow(memory_manager).to receive(:read).and_return(knowledge_graph)
+    allow(knowledge_graph).to receive(:graph).and_return(instance_double(RGL::AdjacencyGraph, vertices: ["concept1", "concept2"]))
+    allow(knowledge_graph).to receive(:to_json).and_return("{}")
   end
 
   describe "#run" do
@@ -35,7 +32,6 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
       action2 = ResearchAssistant::MemoryAgent::Action.new(name: "test_action_2", reasons: "test_reasons_2")
       actions = [action1, action2]
 
-
       allow(agent_manager.action_determiner).to receive(:get_next_action).and_return(actions)
       allow(agent_action_executor).to receive(:run).with(action1, "topic", "").and_return("analysis_1")
       allow(agent_action_executor).to receive(:run).with(action2, "topic", "").and_return("analysis_2")
@@ -43,32 +39,12 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager do
       allow(agent_manager.article_enhancer.write_api_client).to receive(:write_article).and_return("enhanced_article")
 
       expect(memory_manager).to receive(:read)
-      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", array_including(
-        a_hash_including(key: "key1", value: { "value" => "AI impact on jobs", "importance" => 5, "last_accessed" => 1751619685 }),
-        a_hash_including(key: "key2", value: { "value" => "Unrelated topic", "importance" => 2, "last_accessed" => 1751619585 })
-      ))
+      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", knowledge_graph)
       expect(agent_action_executor).to receive(:run).with(action1, "topic", "")
       expect(agent_action_executor).to receive(:run).with(action2, "topic", "")
-            expect(file_manager).to receive(:save_iteration).with("enhanced_article", 1, [action1, action2], ["analysis_1", "analysis_2"])
+      expect(file_manager).to receive(:save_iteration).with("enhanced_article", 1, [action1, action2], ["analysis_1", "analysis_2"])
 
       agent_manager.run("topic", "")
-    end
-
-    it 'prioritizes memories and uses them in decision-making' do
-      allow(agent_manager.action_determiner).to receive(:get_next_action).and_return([])
-
-      # Allow write_article to accept any string argument for the test (move above run call)
-      allow(agent_manager.article_enhancer.write_api_client).to receive(:write_article).with(anything).and_return("enhanced_article")
-
-      # Set the expectation for get_next_action before running the agent
-      expect(agent_manager.action_determiner).to receive(:get_next_action).with("", array_including(
-        a_hash_including(key: "key1", value: { "value" => "AI impact on jobs", "importance" => 5, "last_accessed" => 1751619685 }),
-        a_hash_including(key: "key2", value: { "value" => "Unrelated topic", "importance" => 2, "last_accessed" => 1751619585 })
-      )).and_return([])
-
-      expect { agent_manager.run('AI', '') }.to output(/Prioritized memories/).to_stdout
-
-      agent_manager.run('AI', '')
     end
   end
 end

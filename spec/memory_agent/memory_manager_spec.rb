@@ -1,9 +1,11 @@
 require 'spec_helper'
+require 'research_assistant/memory_agent/memory_manager'
+require 'research_assistant/knowledge_base/knowledge_graph'
 
 RSpec.describe ResearchAssistant::MemoryAgent::MemoryManager do
   let(:research_id) { "test_id" }
   let(:memory_manager) { described_class.new(research_id) }
-  let(:memory_file) { File.join(ResearchAssistant.config.research_dir, research_id, 'memory.json') }
+  let(:memory_file) { File.join(ResearchAssistant.config.research_dir, research_id, 'knowledge_graph.json') }
 
   before do
     FileUtils.mkdir_p(File.dirname(memory_file))
@@ -14,52 +16,40 @@ RSpec.describe ResearchAssistant::MemoryAgent::MemoryManager do
   end
 
   describe "#initialize" do
-    it "creates a memory.json file with an empty hash" do
+    it "creates a knowledge_graph.json file with an empty graph" do
       memory_manager
       expect(File.exist?(memory_file)).to be true
-      expect(JSON.parse(File.read(memory_file))).to eq({})
+      kg = ResearchAssistant::KnowledgeBase::KnowledgeGraph.from_json(File.read(memory_file))
+      expect(kg.graph.vertices).to be_empty
     end
   end
 
   describe "#read" do
-    it "delegates to MemoryStore#read" do
-      expect(memory_manager.instance_variable_get(:@memory_store)).to receive(:read).and_return({ "key" => "value" })
-      expect(memory_manager.read).to eq({ "key" => "value" })
+    it "returns the knowledge graph" do
+      expect(memory_manager.read).to be_a(ResearchAssistant::KnowledgeBase::KnowledgeGraph)
     end
   end
 
   describe "#write" do
-    it "delegates to MemoryStore#write and adds last_accessed timestamp" do
-      data = { "new_key" => "new_value" }
-      expect(memory_manager.instance_variable_get(:@memory_store)).to receive(:write) do |arg|
-        expect(arg["new_key"]).to be_a(Hash)
-        expect(arg["new_key"]['value']).to eq("new_value")
-        expect(arg["new_key"]['last_accessed']).to be_within(2).of(Time.now.to_i)
-      end
-      memory_manager.write(data)
-    end
-  end
+    it "writes the knowledge graph to a file" do
+      kg = memory_manager.read
+      kg.add_concept("Ruby")
+      memory_manager.write(kg)
 
-  describe "#consolidate_and_forget_memories" do
-    it "delegates to MemoryOptimizer#consolidate_and_forget_memories and writes the result" do
-      all_memories = { "old_memory" => { 'value' => "old", 'last_accessed' => 1 } }
-      updated_memories = { "recent_memory" => { 'value' => "recent", 'last_accessed' => 100 } }
-
-      allow(memory_manager).to receive(:read).and_return(all_memories)
-      expect(memory_manager.instance_variable_get(:@memory_optimizer)).to receive(:consolidate_and_forget_memories).with(all_memories, 30).and_return(updated_memories)
-      expect(memory_manager).to receive(:write).with(updated_memories)
-
-      memory_manager.consolidate_and_forget_memories(30)
+      new_kg = ResearchAssistant::KnowledgeBase::KnowledgeGraph.from_json(File.read(memory_file))
+      expect(new_kg.graph.has_vertex?("Ruby")).to be true
     end
   end
 
   describe "#retrieve_contextual_memories" do
     it "delegates to ContextualRetriever#retrieve_contextual_memories" do
-      all_memories = { "memory1" => "Ruby" }
+      kg = memory_manager.read
+      kg.add_concept("Ruby")
+      memory_manager.write(kg)
+
       retrieved_memories = [{ key: "memory1", value: "Ruby" }]
 
-      allow(memory_manager).to receive(:read).and_return(all_memories)
-      expect(memory_manager.instance_variable_get(:@contextual_retriever)).to receive(:retrieve_contextual_memories).with(all_memories, "context", 5).and_return(retrieved_memories)
+      expect(memory_manager.instance_variable_get(:@contextual_retriever)).to receive(:retrieve_contextual_memories).with(["Ruby"], "context", 5).and_return(retrieved_memories)
 
       expect(memory_manager.retrieve_contextual_memories("context")).to eq(retrieved_memories)
     end

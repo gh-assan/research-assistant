@@ -25,14 +25,15 @@ RSpec.describe ResearchAssistant::MemoryAgent::AgentManager, "single action test
   end
 
   describe "#run" do
-    it "calls memory_manager.write when add_to_memory action is executed" do
-      action_log_action = ResearchAssistant::MemoryAgent::Action.new(name: "add_to_memory", reasons: "logging", key: "action_log_iteration_1", value: "Executed a single action.")
+    it "calls memory_manager.write when add_concept action is executed" do
+      action_log_action = ResearchAssistant::MemoryAgent::Action.new(name: "add_concept", reasons: "logging", key: "concept_key", value: "new_concept")
       actions = [action_log_action]
 
       allow(agent_manager.action_determiner).to receive(:get_next_action).and_return(actions)
       allow(agent_action_executor).to receive(:run).with(action_log_action, "topic", "").and_return(nil)
 
       expect(memory_manager).to receive(:read)
+      
       expect(agent_manager.article_enhancer).to receive(:enhance).with("", [action_log_action], []).and_return("enhanced_article_after_log")
       expect(file_manager).to receive(:save_iteration).with("enhanced_article_after_log", 1, [action_log_action], [nil])
 
