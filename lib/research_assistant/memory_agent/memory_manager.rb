@@ -1,5 +1,5 @@
 require 'json'
-require_relative '../knowledge_base/knowledge_graph'
+require 'research_assistant/knowledge_base/knowledge_graph'
 require_relative 'contextual_retriever'
 
 module ResearchAssistant

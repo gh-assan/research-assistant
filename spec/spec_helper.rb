@@ -21,4 +21,12 @@ RSpec.configure do |config|
 
   # Run tests in random order
   config.order = :random
+
+  # Suppress stdout during tests
+  config.around(:each) do |example|
+    original_stdout = $stdout
+    $stdout = File.new('/dev/null', 'w')
+    example.run
+    $stdout = original_stdout
+  end
 end
